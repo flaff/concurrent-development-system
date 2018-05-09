@@ -1,0 +1,56 @@
+$message-padding: 5px;
+$message-border-radius: 15px;
+$side-padding: 30px;
+$message-font-size: 14px;
+
+:local {
+  .messageRow {
+    display: flex;
+    flex-direction: row;
+
+    padding-right: $side-padding;
+
+    &.self {
+      padding-right: 0;
+      padding-left: $side-padding;
+      justify-content: flex-end;
+    }
+  }
+
+  .bubble {
+    padding: $message-padding $message-padding*3;
+    border-radius: $message-border-radius;
+    background: #eee;
+    font-size: $message-font-size;
+    display: inline-block;
+    margin-bottom: 2px;
+
+
+    &:not(.self) {
+      &.first, &.between {
+        border-bottom-left-radius: $message-border-radius / 3;
+      }
+
+      &.last, &.between {
+        border-top-left-radius: $message-border-radius / 3;
+      }
+
+      &.last {
+        margin-bottom: $message-padding * 2;
+      }
+    }
+
+    &.self {
+      background: limegreen;
+      color: white;
+
+      &.first, &.between {
+        border-bottom-right-radius: $message-border-radius / 3;
+      }
+
+      &.last, &.between {
+        border-top-right-radius: $message-border-radius / 3;
+      }
+    }
+  }
+}
