@@ -11,6 +11,7 @@ export interface MessageModel {
 interface MessagesProps {
     messages: Array<MessageModel>;
     user: string;
+    time?: number;
 }
 
 const Messages = (props: MessagesProps) => (

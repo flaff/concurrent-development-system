@@ -32,13 +32,22 @@ const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
             case MessageOrder.ONLY:
                 return;
         }
+    },
+
+    shouldShowName = (order?: MessageOrder, messageOfUser?: boolean) => {
+        return (order === MessageOrder.ONLY || order === MessageOrder.FIRST) && !messageOfUser;
     };
 
 const
     Message = (props: MessageProps) => (
-        <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage})}>
-            <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage})}>
-                {props.children}
+        <div>
+            {shouldShowName(props.order, props.ownMessage) &&
+                <div className={styles.author}>{props.author}</div>
+            }
+            <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage})}>
+                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage})}>
+                    {props.children}
+                </div>
             </div>
         </div>
     );

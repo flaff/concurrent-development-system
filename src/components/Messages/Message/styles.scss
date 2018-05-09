@@ -1,9 +1,19 @@
 $message-padding: 5px;
 $message-border-radius: 15px;
 $side-padding: 30px;
-$message-font-size: 14px;
+$message-fs: 12px;
+$message-author-fs: $message-fs * 0.9;
+
+$default-message-fc: #333;
+$default-message-bg: #eee;
+$self-message-bg: #00C853;
+$self-message-fc: #fff;
 
 :local {
+  .author {
+    font-size: $message-author-fs;
+  }
+
   .messageRow {
     display: flex;
     flex-direction: row;
@@ -18,13 +28,15 @@ $message-font-size: 14px;
   }
 
   .bubble {
+    display: inline-block;
+
+    font-size: $message-fs;
+    color: $default-message-fc;
+    background: $default-message-bg;
+
+    margin-bottom: 2px;
     padding: $message-padding $message-padding*3;
     border-radius: $message-border-radius;
-    background: #eee;
-    font-size: $message-font-size;
-    display: inline-block;
-    margin-bottom: 2px;
-
 
     &:not(.self) {
       &.first, &.between {
@@ -41,8 +53,8 @@ $message-font-size: 14px;
     }
 
     &.self {
-      background: limegreen;
-      color: white;
+      background: $self-message-bg;
+      color: $self-message-fc;
 
       &.first, &.between {
         border-bottom-right-radius: $message-border-radius / 3;
