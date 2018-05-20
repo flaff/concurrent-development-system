@@ -1,5 +1,5 @@
-import {MessageModel} from '@components/Messages/index';
-import {MessageOrder} from '@components/Messages/Message';
+import {MessageModel} from './index';
+import {MessageOrder} from './Message';
 
 const
     isMessageOfAuthorOnlyOne = (messages: Array<MessageModel>, index: number) => {

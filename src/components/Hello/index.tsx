@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './styles.css';
-import Messages, {MessageModel} from '@components/Messages';
-import mock = jest.mock;
+import Simulation from '@components/Simulation';
+import Chat from '@components/Chat';
 
 export interface Props {
     name: string;
@@ -9,22 +9,6 @@ export interface Props {
     onIncrement?: () => void;
     onDecrement?: () => void;
 }
-
-const mockMessages: Array<MessageModel> = [
-    {author: 'someone', content: 'Lorem ipsum'},
-    {author: 'someone', content: 'dolor sit amet'},
-    {author: 'someone', content: 'consectetur adipiscing elit. Morbi mattis elit sit amet interdum cursus.'},
-
-    {author: 'me', content: 'Mauris dictum'},
-
-    {author: 'someoneElse', content: 'dolor sit amet'},
-    {author: 'someoneElse', content: 'consectetur adipiscing elit. Morbi mattis elit sit amet interdum cursus.'},
-
-    {author: 'me', content: 'Lorem ipsum'},
-    {author: 'me', content: 'dolor sit amet'},
-    {author: 'me', content: 'consectetur adipiscing elit. Morbi mattis elit sit amet interdum cursus.'},
-
-];
 
 function Hello({name, enthusiasmLevel = 1, onIncrement, onDecrement}: Props) {
     if (enthusiasmLevel <= 0) {
@@ -40,7 +24,8 @@ function Hello({name, enthusiasmLevel = 1, onIncrement, onDecrement}: Props) {
                 <button onClick={onDecrement}>-</button>
                 <button onClick={onIncrement}>+</button>
             </div>
-            <Messages messages={mockMessages} user={'me'} />
+            <Chat user={'me'} />
+            <Simulation />
         </div>
     );
 }
