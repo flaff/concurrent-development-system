@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
+import * as moment from 'moment';
 
 const styles = require('./styles.scss');
 
@@ -13,6 +14,8 @@ export enum MessageOrder {
 interface MessageProps {
     ownMessage?: boolean;
     author: string;
+    time: string;
+    pending?: boolean;
     first?: boolean;
     order?: MessageOrder;
     children: string;
@@ -45,7 +48,8 @@ const
                 <div className={styles.author}>{props.author}</div>
             }
             <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage})}>
-                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage})}>
+                <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>{props.time}</div>
+                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage, [styles.pending]: props.pending})}>
                     {props.children}
                 </div>
             </div>

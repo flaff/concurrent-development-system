@@ -1,17 +1,20 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import Message, {MessageOrder} from './Message';
-import {getMessageOrder, isMessageOfUser} from '@components/Messages/utils';
+import Message, {MessageOrder} from './Message/index';
+import {getMessageOrder, isMessageOfUser} from './utils';
+import * as moment from 'moment';
 
 export interface MessageModel {
     author: string;
     content: string;
+    time: number;
+    pending?: boolean;
 }
 
 interface MessagesProps {
     messages: Array<MessageModel>;
     user: string;
-    time?: number;
+    currentTime?: number;
 }
 
 const Messages = (props: MessagesProps) => (
@@ -22,6 +25,8 @@ const Messages = (props: MessagesProps) => (
                     author={message.author}
                     ownMessage={isMessageOfUser(message, props.user)}
                     order={getMessageOrder(props.messages, index)}
+                    time={moment(message.time).fromNow()}
+                    pending={message.pending}
                     key={index}
                 >
                     {message.content}

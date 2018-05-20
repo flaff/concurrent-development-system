@@ -3,6 +3,7 @@ $message-border-radius: 15px;
 $side-padding: 30px;
 $message-fs: 12px;
 $message-author-fs: $message-fs * 0.9;
+$message-time-fs: $message-fs * 0.9;
 
 $default-message-fc: #333;
 $default-message-bg: #eee;
@@ -14,9 +15,26 @@ $self-message-fc: #fff;
     font-size: $message-author-fs;
   }
 
+  .time {
+    opacity: 0;
+    font-size: $message-time-fs;
+    order: 1;
+    min-width: 40px;
+    padding-left: $message-author-fs;
+
+    transition: opacity 200ms;
+
+    &.self {
+      order: 0;
+      padding-left: 0;
+      padding-right: $message-author-fs;
+    }
+  }
+
   .messageRow {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     padding-right: $side-padding;
 
@@ -24,6 +42,12 @@ $self-message-fc: #fff;
       padding-right: 0;
       padding-left: $side-padding;
       justify-content: flex-end;
+    }
+
+    &:hover {
+      .time {
+        opacity: 1;
+      }
     }
   }
 
@@ -37,6 +61,13 @@ $self-message-fc: #fff;
     margin-bottom: 2px;
     padding: $message-padding $message-padding*3;
     border-radius: $message-border-radius;
+
+    transition: transform 200ms, opacity 200ms;
+
+    &.pending {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
 
     &:not(.self) {
       &.first, &.between {
