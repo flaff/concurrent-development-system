@@ -14,3 +14,6 @@
 .env
 npm-debug.log
 .idea
+/server/sim_files/*
+/server/node_modules/**/*
+/server/yarn.lock
