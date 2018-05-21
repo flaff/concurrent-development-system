@@ -39,12 +39,28 @@ module.exports = function (bcrypt, jwt) {
             User
                 .findOne({Login: login})
                 .select('Login CreateDate')
-                .exec(function (err, savedUser) {
+                .exec(function (err, foundUser) {
                     if (err) {
                         reject(err);
                     }
                     else {
-                        resolve(savedUser);
+                        resolve(foundUser);
+                    }
+                });
+        });
+    };
+
+    let getUserById = (id) => {
+        return new Promise((resolve, reject) => {
+            User
+                .findOne({_id: id})
+                .select('Login CreateDate')
+                .exec(function (err, foundUser) {
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(foundUser);
                     }
                 });
         });
@@ -119,6 +135,7 @@ module.exports = function (bcrypt, jwt) {
     };
 
     return {
+        getUserById: getUserById,
         checkAuth: checkAuth,
         registerNewUser: registerNewUser
     }

@@ -68,11 +68,19 @@ function exitHandler(options, err) {
 }
 
 io.sockets.on('connection', function (socket) {
+    let roomName = 'room1';
+
     socket.emit('connectedToSocket', {socket: socket.id});
-    // socket.on('change_room', function (data) {
-    //     socket.join(data.userId);
-    //     console.log('room changed to ' + data.userId);
-    // });
+
+    socket.on('change_room', function (data) {
+        socket.join(roomName);
+        console.log('[' + new Date().toUTCString() + ']', data.Login, ' >> room changed to :' + roomName);
+    });
+
+    socket.on('message', function (data) {
+        console.log('[' + new Date().toUTCString() + ']', data.userProfile.Login, ' >> direct message to xd room: ', data.message);
+        io.to(roomName).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: new Date()});
+    });
 });
 
 process.on('exit', exitHandler.bind(null, {exit: true}));
