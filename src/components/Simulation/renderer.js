@@ -70,6 +70,8 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame( animate );
     render();
+
+    rotateAroundWorldAxis(mesh, position, Math.PI / 180);
     // stats.update();
 }
 function render() {
