@@ -1,5 +1,6 @@
+import {UserState} from "@state/types/user";
 
 export interface StoreState {
-    languageName: string;
-    enthusiasmLevel: number;
+    user: UserState;
+    routing: any;
 }

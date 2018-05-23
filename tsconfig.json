@@ -13,7 +13,9 @@
     "baseUrl": ".",
 
     "paths": {
-      "@components/*": ["./src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@state/*": ["./src/state/*"],
+      "@request/*": ["./src/request/*"]
     }
   },
   "exclude": [

@@ -48,7 +48,7 @@ function init(containerElement) {
     renderer.setSize(  containerElement.clientWidth,  containerElement.clientHeight );
     containerElement.appendChild( renderer.domElement );
     window.addEventListener( 'resize', onWindowResize, false );
-    window.addEventListener( "keydown", onKeyDown, true);
+    // window.addEventListener( "keydown", onKeyDown, true);
 
     animate();
 }
@@ -81,7 +81,7 @@ function render() {
 var center = new THREE.Vector3();
 function loadModel ( colorMap, numberOfColors, legendLayout ) {
     var loader = new THREE.BufferGeometryLoader();
-    loader.load( "models/json/temperature.json", function( geometry ) {
+    loader.load( "/models/json/temperature.json", function( geometry ) {
         geometry.computeVertexNormals();
         geometry.normalizeNormals();
         var material = new THREE.MeshLambertMaterial( {
