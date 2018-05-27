@@ -47,7 +47,7 @@ class Auth extends React.Component<AuthProps, AuthState> {
             message: "",
             messages: [],
             socketConnected: "undefined",
-            socket: io("http://localhost:3001/"),
+            socket: io(`http://${window.location.hostname}:3001/`),
             response: ""
         };
         this.onLoginInputChange = this.onLoginInputChange.bind(this);

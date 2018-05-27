@@ -9,18 +9,18 @@ import {
 
 export const
     RequestRegisterUser = (params: RegisterUserParams): AxiosPromise<RegisterUserResponse> =>
-        axios.post("http://localhost:3001/api/auth/register", {
+        axios.post(`http://${window.location.hostname}:3001/api/auth/register`, {
             login: params.login,
             password: params.password
         }),
 
     RequestLoginUser = (params: LoginUserParams): AxiosPromise<LoginUserResponse> =>
-        axios.post("http://localhost:3001/api/auth/login", {
+        axios.post(`http://${window.location.hostname}:3001/api/auth/login`, {
             login: params.login,
             password: params.password
         }),
 
     RequestRestoreUser = (params: RestoreUserParams): AxiosPromise<RestoreUserResponse> =>
-        axios.get("http://localhost:3001/api/auth/user", {
+        axios.get(`http://${window.location.hostname}:3001/api/auth/user`, {
             headers: {"Authorize": params.token.replace("\"", "")}
         });
