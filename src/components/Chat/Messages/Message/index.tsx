@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import * as moment from 'moment';
+import {Moment} from 'moment';
+import Time from "@components/Chat/Messages/Time";
 
 const styles = require('./styles.scss');
 
@@ -14,7 +15,8 @@ export enum MessageOrder {
 interface MessageProps {
     ownMessage?: boolean;
     author: string;
-    time: string;
+    time: Moment;
+    now: Moment;
     pending?: boolean;
     first?: boolean;
     order?: MessageOrder;
@@ -48,7 +50,9 @@ const
                 <div className={styles.author}>{props.author}</div>
             }
             <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage})}>
-                <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>{props.time}</div>
+                <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>
+                    <Time time={props.time} now={props.now} />
+                </div>
                 <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage, [styles.pending]: props.pending})}>
                     {props.children}
                 </div>

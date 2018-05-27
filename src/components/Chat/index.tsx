@@ -1,9 +1,11 @@
-import * as React from 'react';
-import * as moment from 'moment';
-import Messages, {MessageModel} from '@components/Chat/Messages';
-import mockMessages from './mock';
-import {ChangeEvent, KeyboardEvent} from 'react';
-import {isAnEnter} from '@components/Chat/utils';
+import * as React from "react";
+import * as moment from "moment";
+import Messages, {MessageModel} from "@components/Chat/Messages";
+import mockMessages from "./mock";
+import {ChangeEvent, KeyboardEvent} from "react";
+import {isAnEnter} from "@components/Chat/utils";
+
+type Moment = moment.Moment;
 
 interface ChatProps {
     user: string;
@@ -12,41 +14,41 @@ interface ChatProps {
 
 interface ChatState {
     messages: Array<MessageModel>;
+    now: Moment;
     inputValue: string;
 }
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
     state = {
         messages: mockMessages,
-        inputValue: ''
+        inputValue: "",
+        now: moment()
     };
+
+    updateTime() {
+        this.setState({now: moment()});
+    }
 
     constructor(props: ChatProps) {
         super(props);
         this.sendMessage = this.sendMessage.bind(this);
         this.onInputKeyUp = this.onInputKeyUp.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
+        setInterval(this.updateTime.bind(this), 2000);
     }
 
-    sendMessage(content: string) {
-        const nextMessageIndex = this.state.messages.length;
-        this.setState({
+    sendMessage() {
+        const
+            content = this.state.inputValue;
+
+        content && this.setState({
             messages: [
                 ...this.state.messages,
                 {author: this.props.user, time: +moment(), content, pending: true}
             ],
-            inputValue: ''
+            inputValue: ""
         });
-
-        // mock message resolve
-        setTimeout(
-            () => {
-                const messages = [...this.state.messages];
-                messages[nextMessageIndex].pending = false;
-                this.setState({messages});
-            },
-            500
-        );
     }
 
     onInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -55,19 +57,30 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     onInputKeyUp(event: KeyboardEvent<HTMLInputElement>) {
         if (isAnEnter(event)) {
-            this.sendMessage(this.state.inputValue);
+            this.sendMessage();
         }
     }
 
     render() {
         return (
             <div className={this.props.className}>
-                <Messages messages={this.state.messages} user={this.props.user}/>
-                <input
-                    onKeyUp={this.onInputKeyUp}
-                    onChange={this.onInputChange}
-                    value={this.state.inputValue}
-                />
+                <Messages messages={this.state.messages} user={this.props.user} now={this.state.now}/>
+                <div className="input-group">
+                        <input
+                            className="form-control"
+                            placeholder={`Typing as ${this.props.user}...`}
+                            onKeyUp={this.onInputKeyUp}
+                            onChange={this.onInputChange}
+                            value={this.state.inputValue}
+                        />
+                    <div className="input-group-append">
+                        <button
+                            type="submit" className="btn btn-primary"
+                            onClick={this.sendMessage}
+                            disabled={!this.state.inputValue}>Send
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }

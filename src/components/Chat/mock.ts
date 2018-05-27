@@ -8,8 +8,8 @@ const mockMessages: Array<MessageModel> = [
 
     {author: 'me', content: 'Mauris dictum', time: +moment('12:33', 'HH:mm')},
 
-    {author: 'someoneElse', content: 'dolor sit amet', time: +moment('12:34', 'HH:mm')},
-    {author: 'someoneElse', content: 'consectetur adipiscing elit. Morbi mattis elit sit amet interdum cursus.', time: +moment('12:35', 'HH:mm')},
+    {author: 'flaff', content: 'dolor sit amet', time: +moment('12:34', 'HH:mm')},
+    {author: 'flaff', content: 'consectetur adipiscing elit. Morbi mattis elit sit amet interdum cursus.', time: +moment('12:35', 'HH:mm')},
 
     {author: 'me', content: 'Lorem ipsum', time: +moment('12:36', 'HH:mm')},
     {author: 'me', content: 'dolor sit amet', time: +moment('12:37', 'HH:mm')},

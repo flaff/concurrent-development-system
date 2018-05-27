@@ -37,7 +37,7 @@ console.log('#SERVER: Running on port ' + port + '...');
 
 //------------ DB CONNECTION ---------------------------------------------------
 
-let localDbUrl = 'mongodb://localhost/cds';
+let localDbUrl = 'mongodb://localhost:10000/cds';
 
 let dbUrl = '';
 dbUrl = localDbUrl;
@@ -79,7 +79,12 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('message', function (data) {
         console.log('[' + new Date().toUTCString() + ']', data.userProfile.Login, ' >> direct message to xd room: ', data.message);
-        io.to(roomName).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: new Date()});
+        io.to(roomName).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: Number(new Date())});
+    });
+
+    socket.on('ROTATE_SIMULATION', function (data) {
+        console.log('[' + new Date().toUTCString() + ']', data, 'ROTATE_SIMULATION');
+        io.to(roomName).emit('ROTATED_SIMULATION', data);
     });
 });
 

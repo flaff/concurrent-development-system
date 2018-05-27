@@ -7,8 +7,13 @@ $message-time-fs: $message-fs * 0.9;
 
 $default-message-fc: #333;
 $default-message-bg: #eee;
-$self-message-bg: #00C853;
+$self-message-bg: #007bfe;
 $self-message-fc: #fff;
+
+@keyframes slideIn {
+  from {transform: translateY(20%); opacity: 0}
+  to {transform: translateY(0%); opacity: 1}
+}
 
 :local {
   .author {
@@ -64,10 +69,12 @@ $self-message-fc: #fff;
 
     transition: transform 200ms, opacity 200ms;
 
-    &.pending {
-      transform: scale(0.8);
-      opacity: 0.6;
-    }
+    animation: slideIn 200ms;
+
+    //&.pending {
+      //transform: scale(0.8);
+      //opacity: 0.6;
+    //}
 
     &:not(.self) {
       &.first, &.between {

@@ -1,4 +1,5 @@
 import THREE from './three';
+import {attachRotator, onWindowResize as onRotatorWindowResize, setRotation, applyRotationToObject} from './rotator';
 
 // if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
 // var stats;
@@ -43,45 +44,38 @@ function init(containerElement) {
     var light = new THREE.AmbientLight( 0x666666 );
     scene.add( light );
 
-    renderer = new THREE.WebGLRenderer( { antialias: false } );
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize(  containerElement.clientWidth,  containerElement.clientHeight );
     containerElement.appendChild( renderer.domElement );
     window.addEventListener( 'resize', onWindowResize, false );
-    // window.addEventListener( "keydown", onKeyDown, true);
 
+
+    attachRotator(containerElement);
     animate();
 }
-var rotWorldMatrix;
-function rotateAroundWorldAxis( object, axis, radians ) {
-    if ( ! axis ) return;
-    rotWorldMatrix = new THREE.Matrix4();
-    rotWorldMatrix.makeRotationAxis( axis.normalize(), radians );
-    rotWorldMatrix.multiply( object.matrix );
-    object.matrix = rotWorldMatrix;
-    object.rotation.setFromRotationMatrix( object.matrix );
-}
+
 function onWindowResize() {
+    onRotatorWindowResize();
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( container.clientWidth, container.clientHeight );
     render();
 }
+
 function animate() {
     requestAnimationFrame( animate );
     render();
-
-    rotateAroundWorldAxis(mesh, position, Math.PI / 180);
-    // stats.update();
 }
 function render() {
-    // rotateAroundWorldAxis(mesh, position, Math.PI / 180);
+    mesh && applyRotationToObject(mesh);
     renderer.render( scene, camera );
 }
 var center = new THREE.Vector3();
 function loadModel ( colorMap, numberOfColors, legendLayout ) {
     var loader = new THREE.BufferGeometryLoader();
     loader.load( "/models/json/temperature.json", function( geometry ) {
+        // debugger;
         geometry.computeVertexNormals();
         geometry.normalizeNormals();
         var material = new THREE.MeshLambertMaterial( {
@@ -131,8 +125,6 @@ function loadModel ( colorMap, numberOfColors, legendLayout ) {
                 scene.add ( labels[ 'lines' ][ i ] );
             }
         }
-
-        rotateAroundWorldAxis(mesh, position, Math.PI);
     } );
 }
 function cleanScene () {
