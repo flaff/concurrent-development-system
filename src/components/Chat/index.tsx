@@ -1,9 +1,10 @@
-import * as React from "react";
-import * as moment from "moment";
-import Messages, {MessageModel} from "@components/Chat/Messages";
-import mockMessages from "./mock";
-import {ChangeEvent, KeyboardEvent} from "react";
-import {isAnEnter} from "@components/Chat/utils";
+import * as React from 'react';
+import * as moment from 'moment';
+import Messages, {MessageModel} from '@components/Chat/Messages';
+import mockMessages from './mock';
+import {ChangeEvent, KeyboardEvent} from 'react';
+import {isAnEnter} from '@components/Chat/utils';
+import socket from '@request/socket';
 
 type Moment = moment.Moment;
 
@@ -21,7 +22,7 @@ interface ChatState {
 export default class Chat extends React.Component<ChatProps, ChatState> {
     state = {
         messages: mockMessages,
-        inputValue: "",
+        inputValue: '',
         now: moment()
     };
 
@@ -36,18 +37,30 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         this.onInputChange = this.onInputChange.bind(this);
         this.sendMessage = this.sendMessage.bind(this);
         setInterval(this.updateTime.bind(this), 2000);
+
+        socket.on('messageFromServer', (data) => {
+            console.log('messageFromServer: ' + data.message);
+            this.setState({
+                messages: [
+                    ...this.state.messages,
+                    {author: data.author, time: data.time, content: data.message, pending: true}
+                ],
+                inputValue: ''
+            });
+        });
     }
 
     sendMessage() {
         const
             content = this.state.inputValue;
 
-        content && this.setState({
-            messages: [
-                ...this.state.messages,
-                {author: this.props.user, time: +moment(), content, pending: true}
-            ],
-            inputValue: ""
+        content &&
+        socket.emit('message', {
+            roomId: location.href.split('/')[4],
+            author: this.props.user,
+            time: +moment(),
+            content,
+            pending: true
         });
     }
 
@@ -63,16 +76,16 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     render() {
         return (
-            <div className={this.props.className}>
+            <div className={'p-3'}>
                 <Messages messages={this.state.messages} user={this.props.user} now={this.state.now}/>
                 <div className="input-group">
-                        <input
-                            className="form-control"
-                            placeholder={`Typing as ${this.props.user}...`}
-                            onKeyUp={this.onInputKeyUp}
-                            onChange={this.onInputChange}
-                            value={this.state.inputValue}
-                        />
+                    <input
+                        className="form-control"
+                        placeholder={`Typing as ${this.props.user}...`}
+                        onKeyUp={this.onInputKeyUp}
+                        onChange={this.onInputChange}
+                        value={this.state.inputValue}
+                    />
                     <div className="input-group-append">
                         <button
                             type="submit" className="btn btn-primary"
