@@ -15,7 +15,7 @@ interface RoomState {
 class Room extends React.Component<RoomProps, RoomState> {
     constructor(props) {
         super(props);
-        socket.emit("change_room", {Login: this.props.userName});
+        socket.emit("change_room", {Login: this.props.userName, roomId: props.match.params.roomId});
     }
 
     render() {

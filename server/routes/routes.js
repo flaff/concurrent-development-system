@@ -1,7 +1,8 @@
 const authGuard = require('../auth.guard');
 
-module.exports = function (router, app, jwt, bcrypt, io) {
+module.exports = function (router, app, jwt, bcrypt, io, fs) {
     const authRepository = require('../repositories/auth.repository')(bcrypt, jwt);
+    const simulationRepository = require('../repositories/simulation.repository')(fs);
 
     router
         .route('/auth/register')
@@ -52,6 +53,24 @@ module.exports = function (router, app, jwt, bcrypt, io) {
                         Id: result._id,
                         Login: result.Login
                     }
+                });
+            }).catch((err) => {
+                res.status(401).json({
+                    status: false,
+                    err: err
+                });
+            });
+        });
+
+    router
+        .route('/simulation/:fileName')
+        .get((req, res) => {
+            let fileName = req.params.fileName;
+
+            simulationRepository.getFileByName(fileName).then((result) => {
+                res.status(200).json({
+                    status: true,
+                    fileData: result
                 });
             }).catch((err) => {
                 res.status(401).json({

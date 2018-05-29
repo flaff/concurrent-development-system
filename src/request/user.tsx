@@ -1,11 +1,12 @@
-import axios, {AxiosPromise} from "axios";
+import axios, {AxiosPromise} from 'axios';
 import {
     LoginUserParams,
     LoginUserResponse,
     RegisterUserParams,
     RegisterUserResponse,
-    RestoreUserParams, RestoreUserResponse
-} from "@request/types";
+    RestoreUserParams,
+    RestoreUserResponse
+} from '@request/types';
 
 export const
     RequestRegisterUser = (params: RegisterUserParams): AxiosPromise<RegisterUserResponse> =>
@@ -22,5 +23,5 @@ export const
 
     RequestRestoreUser = (params: RestoreUserParams): AxiosPromise<RestoreUserResponse> =>
         axios.get(`http://${window.location.hostname}:3001/api/auth/user`, {
-            headers: {"Authorize": params.token.replace("\"", "")}
+            headers: {'Authorize': params.token.replace('"', '')}
         });

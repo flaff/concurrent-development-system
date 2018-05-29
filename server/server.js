@@ -37,7 +37,7 @@ console.log('#SERVER: Running on port ' + port + '...');
 
 //------------ DB CONNECTION ---------------------------------------------------
 
-let localDbUrl = 'mongodb://localhost:10000/cds';
+let localDbUrl = 'mongodb://localhost:27017/cds';
 
 let dbUrl = '';
 dbUrl = localDbUrl;
@@ -73,13 +73,14 @@ io.sockets.on('connection', function (socket) {
     socket.emit('connectedToSocket', {socket: socket.id});
 
     socket.on('change_room', function (data) {
-        socket.join(roomName);
+        //io.sockets.sockets[socket.id].leave('room1');
+        socket.join(data.roomId);
         console.log('[' + new Date().toUTCString() + ']', data.Login, ' >> room changed to :' + roomName);
     });
 
     socket.on('message', function (data) {
         console.log('[' + new Date().toUTCString() + ']', data.userProfile.Login, ' >> direct message to xd room: ', data.message);
-        io.to(roomName).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: Number(new Date())});
+        io.to(data.roomId).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: Number(new Date())});
     });
 
     socket.on('ROTATE_SIMULATION', function (data) {
@@ -95,6 +96,6 @@ process.on('SIGTERM', exitHandler.bind(null, {exit: true}));
 process.on('uncaughtException', exitHandler.bind(null, {exit: false}));
 
 //------------ LOAD ROUTES ---------------------------------------------------
-require('./routes/routes')(router, app, jwt, bcrypt, io);
+require('./routes/routes')(router, app, jwt, bcrypt, io, fs);
 
 app.use('/api', router);
