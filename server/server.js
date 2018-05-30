@@ -51,8 +51,7 @@ mongoose.connect(dbUrl, function (err, db) {
             console.log('#DATABASE: Connection established to', dbUrl);
         }
     }
-)
-;
+);
 
 function exitHandler(options, err) {
     if (options.cleanup)
@@ -67,28 +66,6 @@ function exitHandler(options, err) {
     }
 }
 
-io.sockets.on('connection', function (socket) {
-    let roomName = 'room1';
-
-    socket.emit('connectedToSocket', {socket: socket.id});
-
-    socket.on('change_room', function (data) {
-        //io.sockets.sockets[socket.id].leave('room1');
-        socket.join(data.roomId);
-        console.log('[' + new Date().toUTCString() + ']', data.Login, ' >> room changed to :' + roomName);
-    });
-
-    socket.on('message', function (data) {
-        console.log('[' + new Date().toUTCString() + ']', data.userProfile.Login, ' >> direct message to xd room: ', data.message);
-        io.to(data.roomId).emit('messageFromServer', {userId:data.userProfile.Login, message: data, time: Number(new Date())});
-    });
-
-    socket.on('ROTATE_SIMULATION', function (data) {
-        console.log('[' + new Date().toUTCString() + ']', data, 'ROTATE_SIMULATION');
-        io.to(roomName).emit('ROTATED_SIMULATION', data);
-    });
-});
-
 process.on('exit', exitHandler.bind(null, {exit: true}));
 
 process.on('SIGTERM', exitHandler.bind(null, {exit: true}));
@@ -97,5 +74,6 @@ process.on('uncaughtException', exitHandler.bind(null, {exit: false}));
 
 //------------ LOAD ROUTES ---------------------------------------------------
 require('./routes/routes')(router, app, jwt, bcrypt, io, fs);
+require('./repositories/sockets.repository')(io);
 
 app.use('/api', router);
