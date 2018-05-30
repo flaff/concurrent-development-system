@@ -1,0 +1,13 @@
+export const enum SocketOMessage {
+    ROTATED_SIMULATION = 'ROTATED_SIMULATION',
+    MESSAGE = 'MESSAGE',
+    JOINED_ROOM = 'JOINED_ROOM',
+    LEFT_ROOM = 'LEFT_ROOM'
+}
+
+export const enum SocketIMessage {
+    SEND_MESSAGE = 'SEND_MESSAGE',
+    ROTATE_SIMULATION = 'ROTATE_SIMULATION',
+    JOIN_ROOM = 'JOIN_ROOM',
+    LEAVE_ROOM = 'LEAVE_ROOM'
+}

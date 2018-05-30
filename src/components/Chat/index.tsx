@@ -4,23 +4,27 @@ import Messages, {MessageModel} from "@components/Chat/Messages";
 import mockMessages from "./mock";
 import {ChangeEvent, KeyboardEvent} from "react";
 import {isAnEnter} from "@components/Chat/utils";
+import {sendMessage} from "@state/actions/room";
+import {connect} from "react-redux";
+import {StoreState} from "@state/types";
+import {MessageType} from "@request/types/sockets";
 
 type Moment = moment.Moment;
 
 interface ChatProps {
     user: string;
     className?: string;
+    messages: Array<MessageModel>;
+    sendMessage: ReturnType<typeof sendMessage>;
 }
 
 interface ChatState {
-    messages: Array<MessageModel>;
     now: Moment;
     inputValue: string;
 }
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
     state = {
-        messages: mockMessages,
         inputValue: "",
         now: moment()
     };
@@ -42,12 +46,14 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         const
             content = this.state.inputValue;
 
-        content && this.setState({
-            messages: [
-                ...this.state.messages,
-                {author: this.props.user, time: +moment(), content, pending: true}
-            ],
-            inputValue: ""
+        this.props.sendMessage({
+            content,
+            type: MessageType.TEXT
+        });
+
+        this.setState({
+            ...this.state,
+            inputValue: ''
         });
     }
 
@@ -64,7 +70,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     render() {
         return (
             <div className={this.props.className}>
-                <Messages messages={this.state.messages} user={this.props.user} now={this.state.now}/>
+                <Messages messages={this.props.messages} user={this.props.user} now={this.state.now}/>
                 <div className="input-group">
                         <input
                             className="form-control"

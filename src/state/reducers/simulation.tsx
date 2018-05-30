@@ -11,7 +11,6 @@ const
 
 export default function simulationReducer(state: SimulationState, action: IAction<RotateSimulationParams>) {
     switch (action.type) {
-        case ROTATE_SIMULATION.type:
         case ROTATED_SIMULATION.type:
             return {
                 ...state,
@@ -20,6 +19,6 @@ export default function simulationReducer(state: SimulationState, action: IActio
             };
 
         default:
-            return defaultSimulationState;
+            return state || defaultSimulationState;
     }
 }

@@ -8,7 +8,7 @@ import {routerMiddleware, routerReducer} from "react-router-redux";
 import {Router, Route} from "react-router-dom";
 
 import {StoreState} from "@state/types";
-import {simulationReducer, userReducer} from "@state/reducers";
+import {simulationReducer, userReducer, roomReducer} from "@state/reducers";
 
 import "./styles.global.scss";
 import RoomsList from "./containers/RoomsList";
@@ -16,6 +16,9 @@ import Room from "./containers/Room";
 
 import history from './history';
 import UnauthorizedRedirect from './routes';
+import {OnMessage, OnJoinedRoom, OnLeftRoom, OnRotatedSimulation} from "@request/simulation";
+import {ROTATED_SIMULATION} from "@state/constants/simulation";
+import {JOINED_ROOM, LEFT_ROOM, MESSAGE} from "@state/constants/room";
 
 const
     middleware = routerMiddleware(history),
@@ -29,11 +32,17 @@ const
         combineReducers({
             user: userReducer,
             routing: routerReducer,
-            simulation: simulationReducer
+            simulation: simulationReducer,
+            room: roomReducer
         }),
 
         reduxDevTools || applyMiddleware(middleware)
     );
+
+OnRotatedSimulation((p) => store.dispatch(ROTATED_SIMULATION(p)));
+OnLeftRoom((p) => store.dispatch(LEFT_ROOM(p)));
+OnJoinedRoom((p) => store.dispatch(JOINED_ROOM(p)));
+OnMessage((p) => store.dispatch(MESSAGE(p)));
 
 ReactDOM.render(
     <Provider store={store}>

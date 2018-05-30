@@ -19,6 +19,7 @@
     }
   },
   "exclude": [
+    "server",
     "node_modules",
     "build",
     "scripts",

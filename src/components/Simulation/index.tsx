@@ -4,8 +4,7 @@ import {setRotationListener, RotatorPayload, setRotation} from '@components/Simu
 import {StoreState} from '@state/types';
 import {rotateSimulation} from '@state/actions/simulation';
 import {connect} from 'react-redux';
-import {GetSimulationFileByName, OnRotatedSimulation} from '@request/simulation';
-import {ROTATED_SIMULATION} from '@state/constants/simulation';
+import {GetSimulationFileByName} from '@request/simulation';
 import {ChangeEvent} from 'react';
 
 interface SimulationProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
@@ -25,7 +24,6 @@ class Simulation extends React.Component<SimulationProps> {
         super(props);
         this.containerRef = React.createRef();
         this.onRotate = this.onRotate.bind(this);
-        OnRotatedSimulation((d) => this.props.dispatch(ROTATED_SIMULATION(d)));
         this.onFileNumberChange = this.onFileNumberChange.bind(this);
         this.getSimulationDataFromFile = this.getSimulationDataFromFile.bind(this);
     }
