@@ -18,7 +18,10 @@ module.exports = function (io) {
 
     let getAllSessions = () => {
         return new Promise((resolve, reject) => {
-            Session.find({}, function (err, foundSessions) {
+            Session
+                .find({})
+                .select('Name CreateDate')
+                .exec(function (err, foundSessions) {
                 if (err) {
                     reject(err);
                 }
@@ -45,19 +48,6 @@ module.exports = function (io) {
         })
     };
 
-    let appendEventToSession = (sessionId, eventData) => {
-        return new Promise((resolve, reject) => {
-            Session.findOneAndUpdate({_id: sessionId}, {$push: {Events: eventData}}, function (err, foundSession) {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(foundSession);
-                }
-            });
-        })
-    };
-
     let appendMessageToSession = (sessionId, messageData) => {
         return new Promise((resolve, reject) => {
             Session.findOneAndUpdate({_id: sessionId}, {$push: {Messages: messageData}}, function (err, foundSession) {
@@ -73,7 +63,6 @@ module.exports = function (io) {
 
     return {
         createNewSession: createNewSession,
-        appendEventToSession: appendEventToSession,
         appendMessageToSession: appendMessageToSession,
         findSessionById: findSessionById,
         getAllSessions: getAllSessions

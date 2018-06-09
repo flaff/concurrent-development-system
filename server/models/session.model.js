@@ -4,25 +4,19 @@ const Schema = mongoose.Schema;
 const Message = {
     author: String,
     content: String,
-    time: Number
-};
-
-const Event = {
-    name: String,
-    content: String,
-    time: Number
+    time: Number,
+    type: String
 };
 
 const sessionSchema = new Schema({
     Messages: [Message],
-    Events: [Event],
-    CreateData: Date,
+    CreateDate: Date,
     Name: String
 });
 
-sessionSchema.pre('save', function(next) {
+sessionSchema.pre('save', function (next) {
     let error = null;
-
+    this.CreateDate = new Date();
     next(error);
 });
 
