@@ -8,9 +8,9 @@ export const
         dispatch(JOIN_ROOM(params));
     },
 
-    leaveRoom = dispatch => () => {
-        EmitLeaveRoom();
-        dispatch(LEAVE_ROOM());
+    leaveRoom = dispatch => (params: any) => {
+        EmitLeaveRoom(params);
+        dispatch(LEAVE_ROOM(params));
     },
 
     sendMessage = dispatch => (params: SendMessagePayload) => {

@@ -48,8 +48,6 @@ const
     },
 
     isMessageOfUser = (message: MessageModel, userName: string) => {
-
-        console.log(message.author, userName)
         return message.author === userName;
     };
 

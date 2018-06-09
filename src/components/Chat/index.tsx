@@ -47,6 +47,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
         this.props.sendMessage({
             content,
+            author: this.props.user,
             type: MessageType.TEXT,
             room: location.href.split('/')[4]
         });

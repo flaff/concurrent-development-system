@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import {StoreState} from "@state/types";
 import {createSession, getSessions} from "@state/actions/sessions";
 import {SessionRecord} from "@request/types";
+import {leaveRoom} from '@state/actions/room';
 
 const
     RoomRecord = (props: SessionRecord) => (
@@ -38,6 +39,10 @@ class SessionsList extends React.Component<SessionsListProps, SessionsListState>
         this.onCreateSessionClick = this.onCreateSessionClick.bind(this);
 
         this.props.getSessions();
+    }
+
+    componentDidMount() {
+        this.props.leaveRoom({author: this.props.user.name});
     }
 
     componentWillReceiveProps(props: SessionsListProps) {
@@ -99,11 +104,13 @@ class SessionsList extends React.Component<SessionsListProps, SessionsListState>
 const
     stateToProps = (state: StoreState) => ({
         sessionsList: state.sessions.list,
-        shouldRefresh: state.sessions.shouldRefresh
+        shouldRefresh: state.sessions.shouldRefresh,
+        user: state.user
     }),
     dispatchToProps = (dispatch) => ({
         createSession: createSession(dispatch),
-        getSessions: getSessions(dispatch)
+        getSessions: getSessions(dispatch),
+        leaveRoom: leaveRoom(dispatch),
     });
 
 export default connect(stateToProps, dispatchToProps)(SessionsList);

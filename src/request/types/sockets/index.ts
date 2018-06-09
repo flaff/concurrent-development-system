@@ -28,6 +28,7 @@ export const enum MessageType {
 
 export type SendMessagePayload = {
     content: string;
+    author: string;
     type: MessageType;
     room: string;
 };

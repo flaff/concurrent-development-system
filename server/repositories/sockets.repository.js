@@ -5,56 +5,59 @@ module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
         socket.emit('CONNECTED_TO_SOCKET', {socket: socket.id});
 
-        socket.on('JOIN_ROOM', function (socketData) {
-            //             //io.sockets.sockets[socket.id].leave('room1');
-            //             let rooms = socket.rooms;
-            //             console.log('JOIN_ROOM', rooms, data);
-            //             // for (let room in rooms) {
-            //             //     socket.leave(room);
-            //             // }
+        socket.on('disconnect', function() {
+            console.log('[' + new Date().toUTCString() + ']', ` >> socket ${socket.id} disconnected`);
+        });
 
+        socket.on('JOIN_ROOM', function (socketData) {
             sessionRepository.findSessionById(socketData.sessionId)
                 .then((createdSession) => {
-                    onCreateSessionMessage(createdSession, socketData, 'SERVER', 'NEW USER CONNECT TO SESSION:' + data.user, 'room changed to :' + createdSession._id);
+                    onCreateSessionMessage(createdSession, socketData, 'SERVER', 'NEW USER CONNECT TO SESSION:' + socketData.user, 'room changed to :' + createdSession._id);
                 })
                 .catch((err) => {
                     onCreateSessionErrorMessage(err, socketData, 'Session error');
                 });
         });
 
-        socket.on('SEND_MESSAGE', function (data) {
+        socket.on('SEND_MESSAGE', function (socketData) {
             let rooms = socket.rooms;
-            console.log('SEND_MESSAGE', rooms, data);
-            console.log('[' + new Date().toUTCString() + ']', data.author, ' >> direct message to xd room: ', data.content);
+            console.log('SEND_MESSAGE', rooms, socketData);
+            console.log('[' + new Date().toUTCString() + ']', socketData.author, ` >> direct message to session: ${socketData.sessionId}`);
 
             let messageItem = {
-                author: data.author,
-                content: data.content,
-                time: Number(new Date())
+                author: socketData.author,
+                content: socketData.content,
+                time: Number(new Date()),
+                type: socketData.type
             };
 
-            sessionRepository.appendMessageToSession(messageItem);
-            io.to(data.room).emit('MESSAGE', messageItem);
+            sessionRepository.appendMessageToSession(socketData.sessionId, messageItem);
+            io.to(socketData.sessionId).emit('MESSAGE', messageItem);
         });
 
+        socket.on('LEAVE_ROOM', function (socketData) {
+            for (let sessionId in socket.rooms) {
+                socket.leave(sessionId);
+                console.log('[' + new Date().toUTCString() + ']', `SERVER >> session ${sessionId} leaved by ${socketData.author}`);
+                let messageItem = {
+                    author: 'SERVER',
+                    content: `USER EXIT: ${socketData.author}`,
+                    time: Number(new Date()),
+                    type: 'SERVER'
+                };
 
-        socket.on('LEAVE_ROOM', function (data) {
-            console.log('[' + new Date().toUTCString() + ']', data.author, ` >> room ${data.room} leaved`);
-            for (let room in rooms) {
-                socket.leave(room);
+                if (sessionId.match(/^[0-9a-fA-F]{24}$/)) {
+                    sessionRepository.appendMessageToSession(sessionId, messageItem);
+                }
+
+                io.to(sessionId).emit('MESSAGE', messageItem);
             }
-            // io.to(data.room).emit('MESSAGE', {
-            //     author: data.author,
-            //     message: data.content,
-            //     time: Number(new Date())
-            // });
         });
 
-        socket.on('ROTATE_SIMULATION', function (data) {
-            console.log('[' + new Date().toUTCString() + ']', data, 'ROTATE_SIMULATION');
-            // io.to(roomName).emit('ROTATED_SIMULATION', data);
+        socket.on('ROTATE_SIMULATION', function (socketData) {
+            console.log('[' + new Date().toUTCString() + ']', socketData, 'ROTATE_SIMULATION');
+            io.to(socketData.sessionId).emit('ROTATED_SIMULATION', socketData);
         });
-
 
         function onCreateSessionMessage(sessionData, socketEventData, author, content, consoleLogText) {
             socket.join(sessionData._id);
@@ -62,9 +65,11 @@ module.exports = function (io) {
                 author: author,
                 content: content,
                 sessionId: sessionData._id,
-                time: Number(new Date())
+                time: Number(new Date()),
+                type: 'SERVER'
             };
             io.to(sessionData._id).emit('MESSAGE', messageItem);
+            sessionRepository.appendMessageToSession(sessionData._id, messageItem);
             console.log('[' + new Date().toUTCString() + ']', socketEventData.user, ' >> ', consoleLogText);
         }
 

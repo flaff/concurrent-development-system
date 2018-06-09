@@ -9,7 +9,7 @@ const Message = {
 };
 
 const sessionSchema = new Schema({
-    Messages: [Message],
+    Messages: [Schema.Types.Mixed],
     CreateDate: Date,
     Name: String
 });

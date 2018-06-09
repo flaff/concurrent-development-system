@@ -50,7 +50,7 @@ module.exports = function (io) {
 
     let appendMessageToSession = (sessionId, messageData) => {
         return new Promise((resolve, reject) => {
-            Session.findOneAndUpdate({_id: sessionId}, {$push: {Messages: messageData}}, function (err, foundSession) {
+            Session.findOneAndUpdate({_id: sessionId}, {$push: {Messages: messageData}}, {safe: true, upsert: true}, function (err, foundSession) {
                 if (err) {
                     reject(err);
                 }
