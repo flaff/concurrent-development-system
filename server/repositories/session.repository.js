@@ -1,6 +1,6 @@
 let Session = require('../models/session.model');
 
-module.exports = function () {
+module.exports = function (io) {
     let findSessionById = (sessionId) => {
         return new Promise((resolve, reject) => {
             Session.findById(sessionId, function (err, foundSession) {
@@ -16,6 +16,19 @@ module.exports = function () {
         })
     };
 
+    let getAllSessions = () => {
+        return new Promise((resolve, reject) => {
+            Session.find({}, function (err, foundSessions) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundSessions);
+                }
+            });
+        })
+    };
+
     let createNewSession = (sessionData) => {
         return new Promise((resolve, reject) => {
             let newSession = new Session(sessionData);
@@ -25,6 +38,7 @@ module.exports = function () {
                     reject(err);
                 }
                 else {
+                    io.sockets.emit('SESSION_LIST_REFRESH', 'test');
                     resolve(savedSession);
                 }
             });
@@ -61,7 +75,8 @@ module.exports = function () {
         createNewSession: createNewSession,
         appendEventToSession: appendEventToSession,
         appendMessageToSession: appendMessageToSession,
-        findSessionById: findSessionById
+        findSessionById: findSessionById,
+        getAllSessions: getAllSessions
     }
 };
 

@@ -3,6 +3,7 @@ const authGuard = require('../auth.guard');
 module.exports = function (router, app, jwt, bcrypt, io, fs) {
     const authRepository = require('../repositories/auth.repository')(bcrypt, jwt);
     const simulationRepository = require('../repositories/simulation.repository')(fs);
+    const sessionsRepository = require('../repositories/session.repository')(io);
 
     router
         .route('/auth/register')
@@ -77,6 +78,37 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
                     status: false,
                     err: err
                 });
+            });
+        });
+
+    router
+        .route('/sessions')
+        .get(authGuard, (req, res) => {
+            sessionsRepository.getAllSessions().then((sessions) => {
+                res.status(200).json(sessions);
+            }).catch((err) => {
+                res.status(401).json(err);
+            });
+        })
+        .post(authGuard, (req, res) => {
+            let sessionData = req.body;
+
+            sessionsRepository.createNewSession(sessionData).then((newSession) => {
+                res.status(200).json(newSession);
+            }).catch((err) => {
+                res.status(401).json(err);
+            });
+        });
+
+    router
+        .route('/sessions/:sessionId')
+        .get(authGuard, (req, res) => {
+            let sessionId = req.params.sessionId;
+
+            sessionsRepository.findSessionById(sessionId).then((session) => {
+                res.status(200).json(session);
+            }).catch((err) => {
+                res.status(401).json(err);
             });
         });
 };

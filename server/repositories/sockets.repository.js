@@ -18,23 +18,7 @@ module.exports = function (io) {
                     onCreateSessionMessage(createdSession, socketData, 'SERVER', 'NEW USER CONNECT TO SESSION:' + data.user, 'room changed to :' + createdSession._id);
                 })
                 .catch((err) => {
-                    if (err.Message == 'NOT_FOUND') {
-                        sessionRepository.createNewSession({
-                            Name: data.sessionName,
-                            Event: [{
-                                name: 'CREATE',
-                                content: `Session cretated by ${data.user}`,
-                                time: Number(new Date())
-                            }],
-                            CreateDate: new Date()
-                        }).then((createdSession) => {
-                            onCreateSessionMessage(createdSession, socketData, 'SERVER', 'NEW USER CONNECT TO SESSION:' + data.user, 'room changed to :' + createdSession._id);
-                        }).catch((err) => {
-                            onCreateSessionErrorMessage(err, socketData, 'Create new session error');
-                        });
-                    } else {
-                        onCreateSessionErrorMessage(err, socketData, 'Create new session error');
-                    }
+                    onCreateSessionErrorMessage(err, socketData, 'Session error');
                 });
         });
 
@@ -68,7 +52,7 @@ module.exports = function (io) {
 
         socket.on('ROTATE_SIMULATION', function (data) {
             console.log('[' + new Date().toUTCString() + ']', data, 'ROTATE_SIMULATION');
-           // io.to(roomName).emit('ROTATED_SIMULATION', data);
+            // io.to(roomName).emit('ROTATED_SIMULATION', data);
         });
 
 
