@@ -5,6 +5,8 @@ import {getMessageOrder, isMessageOfUser} from './utils';
 import * as moment from 'moment';
 import {Moment} from "moment";
 
+const styles = require('./styles.scss');
+
 export interface MessageModel {
     author: string;
     content: string;
@@ -20,7 +22,7 @@ interface MessagesProps {
 }
 
 const Messages = (props: MessagesProps) => (
-    <div>
+    <div className={styles.messagesContainer} id={'messages-container'}>
         {props.messages.map(
             (message, index) =>
                 <Message

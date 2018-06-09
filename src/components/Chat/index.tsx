@@ -38,6 +38,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         this.sendMessage = this.sendMessage.bind(this);
         this.onInputKeyUp = this.onInputKeyUp.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
+        this.scrollToBottom = this.scrollToBottom.bind(this);
         setInterval(this.updateTime.bind(this), 2000);
     }
 
@@ -56,6 +57,17 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             ...this.state,
             inputValue: ''
         });
+
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 0);
+    }
+
+    scrollToBottom() {
+        let objDiv = document.getElementById('messages-container');
+        if (objDiv) {
+            objDiv.scrollTop = objDiv.scrollHeight;
+        }
     }
 
     onInputChange(event: ChangeEvent<HTMLInputElement>) {
