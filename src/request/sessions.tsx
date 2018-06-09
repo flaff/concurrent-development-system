@@ -6,7 +6,7 @@ import {GetSessionsResponse} from "@request/types/sessions";
 export const
     RequestCreateSession = (params: CreateSessionPayload): AxiosPromise<CreateSessionResponse> =>
         axios.post(`http://${window.location.hostname}:3001/api/sessions`, {
-            name: params.name
+            Name: params.Name
         }),
 
     RequestGetSessions = (): AxiosPromise<GetSessionsResponse> =>

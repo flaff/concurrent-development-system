@@ -51,7 +51,7 @@ class SessionsList extends React.Component<SessionsListProps, SessionsListState>
 
     onCreateSessionClick() {
         this.props.createSession({
-            name: this.state.newSessionInputValue
+            Name: this.state.newSessionInputValue
         });
         this.setState({
             ...this.state,
@@ -67,11 +67,24 @@ class SessionsList extends React.Component<SessionsListProps, SessionsListState>
                     {this.props.sessions && this.props.sessions.map((roomName, key) => (
                         <RoomRecord roomName={roomName} key={key} roomId={roomName}/>
                     ))}
-                    <li className="list-group-item">
-                        <input value={this.state.newSessionInputValue} onChange={this.onSessionNameInputChange} />
-                        <button onClick={this.onCreateSessionClick} disabled={!this.state.newSessionInputValue}>
-                            New session
-                        </button>
+                    <li className="list-group-item"><h6>Create new session
+                        {' '}
+                        <span className="badge badge-secondary">WOW</span>
+                        {' '}
+                        <span className="badge badge-secondary">NEW</span>
+                    </h6>
+                        <div className={'input-group'}>
+                            <input
+                                placeholder={'Session name'}
+                                className={'form-control'}
+                                value={this.state.newSessionInputValue} onChange={this.onSessionNameInputChange} />
+                            <div className="input-group-append">
+                                <button className={'btn btn-outline-secondary'}
+                                    onClick={this.onCreateSessionClick} disabled={!this.state.newSessionInputValue}>
+                                    New session
+                                </button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>

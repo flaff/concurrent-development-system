@@ -2,10 +2,12 @@ import {UserState} from "@state/types/user";
 import {IAction} from "@state/constants/generic";
 import {USER_LOGIN, USER_LOGOUT, USER_REGISTER, USER_RESTORE} from "@state/constants/user";
 import {LoginUserResponse, RegisterUserResponse, RestoreUserResponse} from "@request/types";
+import axios from 'axios';
 
 const
     setToken = (token: string) => {
         token ? localStorage.setItem("token", token) : localStorage.removeItem("token");
+        axios.defaults.headers.common['authorize'] = token || '';
         return token || "";
     },
 
@@ -35,6 +37,8 @@ const
         name: "",
         authorized: false
     });
+
+axios.defaults.headers.common['Authorize'] = localStorage.getItem("token");
 
 export default function userReducer(state: UserState, action): UserState {
     switch (action.type) {

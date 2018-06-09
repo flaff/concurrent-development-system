@@ -1,14 +1,15 @@
 export type CreateSessionPayload = {
-    name: string;
+    Name: string;
 };
 
 export type CreateSessionResponse = {
-    id: string;
+    _id: string;
 };
 
 export type SessionRecord = {
-    name: string;
-    id: string;
+    Name: string;
+    _id: string;
+    CreateDate: number;
 };
 
 export type GetSessionsResponse = Array<SessionRecord>;
