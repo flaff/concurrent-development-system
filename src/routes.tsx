@@ -1,7 +1,7 @@
 import * as React from "react";
 import Room from "./containers/Room";
 import Auth from "./containers/Auth";
-import RoomsList from "./containers/RoomsList";
+import RoomsList from "./containers/SessionsList";
 import {Redirect, Route} from "react-router-dom";
 import {StoreState} from "@state/types";
 import {connect} from "react-redux";

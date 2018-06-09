@@ -29,7 +29,7 @@ interface LoginInputProps {
 }
 
 const GenericInput = (props: LoginInputProps) => (
-    <div>nop
+    <div>
         <div style={{opacity: (props.value ? 1 : 0)}}>{props.title}</div>
         <input className="form-control"
                value={props.value}
