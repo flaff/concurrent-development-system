@@ -31,14 +31,15 @@ module.exports = function (fs) {
         return new Promise((resolve, reject) => {
             try {
                 let filePath = './server/sim_files/temperature ' + fileName + '.k';
+                console.log(__dirname, filePath);
                 if (!fs.existsSync(filePath)) {
-                    reject('File don\'t exist!');
+                    reject('File doesn\'t exist!');
                     return -1;
                 }
                 let instream = fs.createReadStream(filePath);
                 let outstream = new stream;
                 let rl = readline.createInterface(instream, outstream);
-                let nodes = [];
+                let nodes = {};
                 let elementSolid = [];
                 let isNodeData;
                 let isEnd;
@@ -59,9 +60,9 @@ module.exports = function (fs) {
 
                     if (!isEnd) {
                         if (isNodeData) {
-                            nodes.push(new Node(values[0], values[1], values[2], values[3], values[4]))
+                            nodes[values[0]] = new Node(values[0], values[1], values[2], values[3], values[4]);
                         } else {
-                            elementSolid.push(new ElementSolid(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]))
+                            elementSolid.push(new ElementSolid(values[0], values[1], nodes[values[2]], nodes[values[3]], nodes[values[4]], nodes[values[5]], nodes[values[6]], nodes[values[7]], nodes[values[8]], nodes[values[9]]))
                         }
                     }
                 });
