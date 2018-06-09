@@ -47,7 +47,11 @@ const
         return MessageOrder.ONLY;
     },
 
-    isMessageOfUser = (message: MessageModel, userName: string) => message.author === userName;
+    isMessageOfUser = (message: MessageModel, userName: string) => {
+
+        console.log(message.author, userName)
+        return message.author === userName;
+    };
 
 export {
     getMessageOrder,

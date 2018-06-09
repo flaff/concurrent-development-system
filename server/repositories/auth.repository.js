@@ -2,7 +2,6 @@ let User = require('../models/user.model');
 let config = require('../config/config');
 
 module.exports = function (bcrypt, jwt) {
-
     let generateHashForPassword = (userPassword) => {
         return new Promise((resolve, reject) => {
             bcrypt.genSalt(10, function (err, salt) {

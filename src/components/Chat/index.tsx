@@ -1,13 +1,13 @@
-import * as React from "react";
-import * as moment from "moment";
-import Messages, {MessageModel} from "@components/Chat/Messages";
-import mockMessages from "./mock";
-import {ChangeEvent, KeyboardEvent} from "react";
-import {isAnEnter} from "@components/Chat/utils";
-import {sendMessage} from "@state/actions/room";
-import {connect} from "react-redux";
-import {StoreState} from "@state/types";
-import {MessageType} from "@request/types/sockets";
+import * as React from 'react';
+import * as moment from 'moment';
+import Messages, {MessageModel} from '@components/Chat/Messages';
+import mockMessages from './mock';
+import {ChangeEvent, KeyboardEvent} from 'react';
+import {isAnEnter} from '@components/Chat/utils';
+import {sendMessage} from '@state/actions/room';
+import {connect} from 'react-redux';
+import {StoreState} from '@state/types';
+import {MessageType} from '@request/types/sockets';
 
 type Moment = moment.Moment;
 
@@ -25,7 +25,7 @@ interface ChatState {
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
     state = {
-        inputValue: "",
+        inputValue: '',
         now: moment()
     };
 
@@ -38,7 +38,6 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         this.sendMessage = this.sendMessage.bind(this);
         this.onInputKeyUp = this.onInputKeyUp.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
-        this.sendMessage = this.sendMessage.bind(this);
         setInterval(this.updateTime.bind(this), 2000);
     }
 
@@ -48,7 +47,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
         this.props.sendMessage({
             content,
-            type: MessageType.TEXT
+            type: MessageType.TEXT,
+            room: location.href.split('/')[4]
         });
 
         this.setState({
@@ -72,13 +72,13 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             <div className={this.props.className}>
                 <Messages messages={this.props.messages} user={this.props.user} now={this.state.now}/>
                 <div className="input-group">
-                        <input
-                            className="form-control"
-                            placeholder={`Typing as ${this.props.user}...`}
-                            onKeyUp={this.onInputKeyUp}
-                            onChange={this.onInputChange}
-                            value={this.state.inputValue}
-                        />
+                    <input
+                        className="form-control"
+                        placeholder={`Typing as ${this.props.user}...`}
+                        onKeyUp={this.onInputKeyUp}
+                        onChange={this.onInputChange}
+                        value={this.state.inputValue}
+                    />
                     <div className="input-group-append">
                         <button
                             type="submit" className="btn btn-primary"

@@ -1,6 +1,8 @@
 export type JoinRoomPayload = {
     user: string;
     room: string;
+    sessionName: string;
+    sessionId: string;
 };
 
 export type JoinedRoomPayload = {
@@ -24,6 +26,7 @@ export const enum MessageType {
 export type SendMessagePayload = {
     content: string;
     type: MessageType;
+    room: string;
 };
 
 export type MessagePayload = {

@@ -6,6 +6,7 @@ import {connect} from "react-redux";
 import {StoreState} from "@state/types";
 import {loginUser, logoutUser, registerUser, restoreUser} from "@state/actions";
 import {UserProfile} from "@request/types";
+import {ToastrService} from "../toastr.helper";
 
 interface AuthProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
 }
@@ -63,17 +64,13 @@ class Auth extends React.Component<AuthProps, AuthState> {
             this.getUserData();
         }
 
-        this.state.socket.on("connectedToSocket", (data) => {
-            console.log("Socket connected" + data.socket);
-
+        this.state.socket.on("CONNECTED_TO_SOCKET", (data) => {
+            console.log("Socket connected " + data.socket);
+            ToastrService.success('Connected to socket', `Socket Id: ${data.socket}`);
             this.state = {
                 ...this.state,
                 socketConnected: "success!"
             };
-        });
-
-        this.state.socket.on("messageFromServer", (data) => {
-            console.log(data);
         });
     }
 
@@ -103,11 +100,14 @@ class Auth extends React.Component<AuthProps, AuthState> {
             const {loginField, passwordField} = this.state;
 
             this.props.registerUser({login: loginField, password: passwordField});
+
         } else {
             this.setState({
                 ...this.state,
                 response: "Login and password must be longer than 5 chars"
             });
+
+            ToastrService.error("Login and password must be longer than 5 chars", 'Register error!');
         }
     }
 
@@ -141,6 +141,8 @@ class Auth extends React.Component<AuthProps, AuthState> {
                 ...this.state,
                 response: "Login and password must be longer than 5 chars"
             });
+
+            ToastrService.error("Login and password must be longer than 5 chars", 'Register error!');
         }
     }
 
