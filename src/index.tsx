@@ -64,7 +64,7 @@ ReactDOM.render(
                 <UnauthorizedRedirect />
                 <Route exact path={"/"} component={Auth}/>
                 <Route exact path={"/sessions"} component={SessionsList}/>
-                <Route path={"/sessions/:id"} component={SessionSimulation}/>
+                <Route path={"/sessions/:roomId"} component={SessionSimulation}/>
             </div>
         </Router>
     </Provider>,

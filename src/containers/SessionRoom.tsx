@@ -3,7 +3,7 @@ import Chat from '@components/Chat';
 import {connect} from 'react-redux';
 import {StoreState} from '@state/types';
 import Simulation from '@components/Simulation';
-import {joinRoom, leaveRoom, sendMessage} from '@state/actions/room';
+import {getAllMessages, joinRoom, leaveRoom, sendMessage} from "@state/actions/room";
 
 interface RoomProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
 }
@@ -22,6 +22,7 @@ class SessionRoom extends React.Component<RoomProps, RoomState> {
             sessionName: 'Session 1',
             sessionId: props.match.params.roomId
         });
+        this.props.getAllMessages({id: props.match.params.roomId});
     }
 
     render() {
@@ -43,7 +44,8 @@ const
 
     dispatchToProps = (dispatch) => ({
         joinRoom: joinRoom(dispatch),
-        sendMessage: sendMessage(dispatch)
+        sendMessage: sendMessage(dispatch),
+        getAllMessages: getAllMessages(dispatch)
     });
 
 export default connect(
