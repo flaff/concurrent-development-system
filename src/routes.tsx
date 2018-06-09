@@ -1,5 +1,5 @@
 import * as React from "react";
-import Room from "./containers/Room";
+import Room from "./containers/SessionRoom";
 import Auth from "./containers/Auth";
 import RoomsList from "./containers/SessionsList";
 import {Redirect, Route} from "react-router-dom";

@@ -12,7 +12,7 @@ interface RoomState {
     roomName: string;
 }
 
-class Room extends React.Component<RoomProps, RoomState> {
+class SessionRoom extends React.Component<RoomProps, RoomState> {
     constructor(props) {
         super(props);
         //socket.emit("change_room", {Login: this.props.userName, roomId: props.match.params.roomId});
@@ -23,7 +23,6 @@ class Room extends React.Component<RoomProps, RoomState> {
             sessionId: props.match.params.roomId
         });
     }
-
 
     render() {
         return (
@@ -50,4 +49,4 @@ const
 export default connect(
     stateToProps,
     dispatchToProps
-)(Room);
+)(SessionRoom);

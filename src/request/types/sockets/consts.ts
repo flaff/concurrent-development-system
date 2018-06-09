@@ -2,7 +2,8 @@ export const enum SocketOMessage {
     ROTATED_SIMULATION = 'ROTATED_SIMULATION',
     MESSAGE = 'MESSAGE',
     JOINED_ROOM = 'JOINED_ROOM',
-    LEFT_ROOM = 'LEFT_ROOM'
+    LEFT_ROOM = 'LEFT_ROOM',
+    SESSION_LIST_REFRESH = 'SESSION_LIST_REFRESH'
 }
 
 export const enum SocketIMessage {

@@ -217,7 +217,7 @@ class Auth extends React.Component<AuthProps, AuthState> {
             <div style={{textAlign: "center"}}>
                 <h1>Hello, {this.props.name}!</h1>
                 <div>
-                    <Link to={"/rooms"}>
+                    <Link to={"/sessions"}>
                         <button type="button" className="btn btn-outline-success btn-lg">Continue</button>
                     </Link>
                 </div>

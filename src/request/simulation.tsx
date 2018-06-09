@@ -3,28 +3,22 @@ import {
     RotateSimulationPayload,
     RotatedSimulationPayload,
     SendMessagePayload,
-    JoinedRoomPayload, JoinRoomPayload, MessagePayload, LeftRoomPayload
+    JoinedRoomPayload,
+    JoinRoomPayload,
+    MessagePayload,
+    LeftRoomPayload,
+    defineSocketListener,
+    createSocketListenerSetter
 } from "@request/types/sockets";
 import {SocketIMessage, SocketOMessage} from "@request/types/sockets/consts";
 import axios from "axios";
 
-const
-    listeners = {},
 
-    defineListener = (type: SocketOMessage) => {
-        socket.on(type, (p) => listeners[type] && listeners[type](p));
-    },
-
-    createListenerSetter = function <T>(type: SocketOMessage) {
-        return (listener: (p: T) => void) => listeners[type] = listener;
-    };
-
-defineListener(SocketOMessage.LEFT_ROOM);
-defineListener(SocketOMessage.JOINED_ROOM);
-defineListener(SocketOMessage.MESSAGE);
-defineListener(SocketOMessage.ROTATED_SIMULATION);
-
-
+defineSocketListener(SocketOMessage.LEFT_ROOM);
+defineSocketListener(SocketOMessage.JOINED_ROOM);
+defineSocketListener(SocketOMessage.MESSAGE);
+defineSocketListener(SocketOMessage.ROTATED_SIMULATION);
+defineSocketListener(SocketOMessage.SESSION_LIST_REFRESH);
 
 export const
     EmitRotateSimulation = (payload: RotateSimulationPayload) => socket.emit(SocketIMessage.ROTATE_SIMULATION, payload),
@@ -32,10 +26,10 @@ export const
     EmitJoinRoom = (payload: JoinRoomPayload) => socket.emit(SocketIMessage.JOIN_ROOM, payload),
     EmitLeaveRoom = () => socket.emit(SocketIMessage.LEAVE_ROOM),
 
-    OnRotatedSimulation = createListenerSetter<RotatedSimulationPayload>(SocketOMessage.ROTATED_SIMULATION),
-    OnMessage = createListenerSetter<MessagePayload>(SocketOMessage.MESSAGE),
-    OnJoinedRoom = createListenerSetter<JoinedRoomPayload>(SocketOMessage.JOINED_ROOM),
-    OnLeftRoom = createListenerSetter<LeftRoomPayload>(SocketOMessage.LEFT_ROOM),
+    OnRotatedSimulation = createSocketListenerSetter<RotatedSimulationPayload>(SocketOMessage.ROTATED_SIMULATION),
+    OnMessage = createSocketListenerSetter<MessagePayload>(SocketOMessage.MESSAGE),
+    OnJoinedRoom = createSocketListenerSetter<JoinedRoomPayload>(SocketOMessage.JOINED_ROOM),
+    OnLeftRoom = createSocketListenerSetter<LeftRoomPayload>(SocketOMessage.LEFT_ROOM),
 
     GetSimulationFileByName = (fileNumber: string) => {
         return new Promise((resolve, reject) => {

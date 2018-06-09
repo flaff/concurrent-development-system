@@ -1,3 +1,6 @@
+import socket from "@request/socket";
+import {SocketOMessage} from "@request/types/sockets/consts";
+
 export type JoinRoomPayload = {
     user: string;
     room: string;
@@ -35,3 +38,14 @@ export type MessagePayload = {
     author: string;
     time: number;
 };
+
+const listeners = {};
+
+export const
+    defineSocketListener = (type: SocketOMessage) => {
+        socket.on(type, (p) => listeners[type] && listeners[type](p));
+    },
+
+    createSocketListenerSetter = function <T>(type: SocketOMessage) {
+        return (listener: (p: T) => void) => listeners[type] = listener;
+    };
