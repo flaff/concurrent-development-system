@@ -11,7 +11,7 @@ import {StoreState} from "@state/types";
 import {simulationReducer, userReducer, roomReducer} from "@state/reducers";
 
 import "./styles.global.scss";
-import RoomsList from "./containers/RoomsList";
+import RoomsList from "./containers/SessionsList";
 import Room from "./containers/Room";
 
 import history from './history';
@@ -19,6 +19,7 @@ import UnauthorizedRedirect from './routes';
 import {OnMessage, OnJoinedRoom, OnLeftRoom, OnRotatedSimulation} from "@request/simulation";
 import {ROTATED_SIMULATION} from "@state/constants/simulation";
 import {JOINED_ROOM, LEFT_ROOM, MESSAGE} from "@state/constants/room";
+import sessionsReducer from "@state/reducers/sessions";
 
 const
     middleware = routerMiddleware(history),
@@ -33,6 +34,7 @@ const
             user: userReducer,
             routing: routerReducer,
             simulation: simulationReducer,
+            sessions: sessionsReducer,
             room: roomReducer
         }),
 
