@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import * as classnames from 'classnames';
+import Dropzone from 'react-dropzone';
 import Messages, {MessageModel} from '@components/Chat/Messages';
 import mockMessages from './mock';
 import {ChangeEvent, KeyboardEvent} from 'react';
@@ -42,6 +43,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         this.onInputKeyUp = this.onInputKeyUp.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.scrollToBottom = this.scrollToBottom.bind(this);
+        this.onFilesDrop = this.onFilesDrop.bind(this);
         setInterval(this.updateTime.bind(this), 2000);
     }
 
@@ -83,18 +85,40 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         }
     }
 
+    onFilesDrop(acceptedFiles) {
+        const file = acceptedFiles && acceptedFiles[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                this.props.sendMessage({
+                    type: MessageType.BASE64IMAGE,
+                    content: reader.result,
+                    author: this.props.user,
+                    room: location.href.split('/')[4]
+                })
+            });
+
+            reader.readAsDataURL(file);
+        }
+    }
+
     render() {
         return (
             <div className={classnames(this.props.className, styles.chat)}>
                 <Messages messages={this.props.messages} user={this.props.user} now={this.state.now}/>
                 <div className="input-group">
-                    <input
-                        className="form-control"
-                        placeholder={`Typing as ${this.props.user}...`}
-                        onKeyUp={this.onInputKeyUp}
-                        onChange={this.onInputChange}
-                        value={this.state.inputValue}
-                    />
+                    <Dropzone
+                        style={{}}
+                        disableClick={true}
+                        accept={'image/*'} onDrop={this.onFilesDrop}>
+                        <input
+                            className="form-control"
+                            placeholder={`Typing as ${this.props.user}...`}
+                            onKeyUp={this.onInputKeyUp}
+                            onChange={this.onInputChange}
+                            value={this.state.inputValue}
+                        />
+                    </Dropzone>
                     <div className="input-group-append">
                         <button
                             type="submit" className="btn btn-primary"

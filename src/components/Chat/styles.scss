@@ -4,6 +4,7 @@
   .chat {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - #{$navbar-height})
+    height: calc(100vh - #{$navbar-height});
+    max-width: 300px;
   }
 }

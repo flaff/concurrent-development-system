@@ -1,7 +1,7 @@
 const Session = require('../models/session.model');
 const sessionRepository = require('../repositories/session.repository')();
 const toFiveDigitString = (i) => Array(6 - String(i + 1).length).join('0') + String(i),
-    AUTOPLAY_INTERVAL = 500-;
+    AUTOPLAY_INTERVAL = 500;
 
 module.exports = function (io) {
     io.sockets.on('connection', function (socket) {

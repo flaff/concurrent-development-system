@@ -123,5 +123,10 @@ $self-message-fc: #fff;
       width: 100%;
       text-align: center;
     }
+
+    &.image {
+      padding: 0;
+      overflow: hidden;
+    }
   }
 }

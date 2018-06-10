@@ -3,6 +3,8 @@ import * as classNames from 'classnames';
 import {Moment} from 'moment';
 import Time from "@components/Chat/Messages/Time";
 import {MessageType} from "@request/types/sockets";
+import Image from '@components/Image';
+
 
 const styles = require('./styles.scss');
 
@@ -22,7 +24,7 @@ interface MessageProps {
     first?: boolean;
     order?: MessageOrder;
     type: MessageType;
-    children: string;
+    content: string;
 }
 
 const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
@@ -45,18 +47,31 @@ const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
         return type !== MessageType.SERVER && (order === MessageOrder.ONLY || order === MessageOrder.FIRST) && !messageOfUser;
     };
 
+const messageTypeToClassName = (type: MessageType) => {
+    switch (type) {
+        case MessageType.BASE64IMAGE:
+            return styles.image;
+        case MessageType.SERVER:
+            return styles.server;
+        case MessageType.TEXT:
+            return '';
+    }
+};
+
 const
     Message = (props: MessageProps) => (
         <div>
             {shouldShowName(props.type, props.order, props.ownMessage) &&
                 <div className={styles.author}>{props.author}</div>
             }
-            <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage, [styles.server]: props.type === MessageType.SERVER})}>
+            <div className={classNames(styles.messageRow, messageTypeToClassName(props.type), {[styles.self]: props.ownMessage})}>
                 <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>
                     <Time time={props.time} now={props.now} />
                 </div>
-                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage, [styles.pending]: props.pending, [styles.server]: props.type === MessageType.SERVER})}>
-                    {props.children}
+                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), messageTypeToClassName(props.type), {[styles.self]: props.ownMessage, [styles.pending]: props.pending})}>
+                    {props.type === MessageType.BASE64IMAGE
+                        ? <Image src={props.content} />
+                        : props.content}
                 </div>
             </div>
         </div>

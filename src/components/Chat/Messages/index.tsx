@@ -36,9 +36,8 @@ const Messages = (props: MessagesProps) => (
                     type={message.type}
                     pending={message.pending}
                     key={index}
-                >
-                    {message.content}
-                </Message>
+                    content={message.content}
+            />
         )}
     </div>
 );
