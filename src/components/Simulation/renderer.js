@@ -41,7 +41,7 @@ function init(containerElement) {
     var light = new THREE.AmbientLight( 0x666666 );
     scene.add( light );
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer = new THREE.WebGLRenderer( { antialias: true, preserveDrawingBuffer: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize(  containerElement.clientWidth,  containerElement.clientHeight );
     containerElement.appendChild( renderer.domElement );
@@ -175,7 +175,12 @@ function cleanScene () {
 //     }
 // }
 
+function getCurrentBase64Image() {
+    return renderer.domElement.toDataURL('image/png');
+}
+
 export default init;
 export {
-    loadModel
+    loadModel,
+    getCurrentBase64Image
 };

@@ -1,0 +1,32 @@
+:local {
+  .snapshot {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+
+    background: rgba(white, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+  }
+
+  .modal {
+    width: 70%;
+    height: 80%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid rgba(black, 0.1);
+    background: white;
+  }
+
+  .canvas {
+    flex: 1 1 auto;
+  }
+}

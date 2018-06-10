@@ -26,7 +26,7 @@ interface MessagesProps {
 
 const Messages = (props: MessagesProps) => (
     <div className={styles.messagesContainer} id={'messages-container'}>
-        {props.messages.map(
+        {props.messages.filter((message) => message.type !== MessageType.SERVER || props.showSystemMessages).map(
             (message, index) =>
                 <Message
                     showSystemMessages={props.showSystemMessages}

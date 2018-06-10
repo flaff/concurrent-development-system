@@ -1,11 +1,14 @@
 import * as React from 'react';
-import render, {loadModel} from './renderer.js';
+import render, {loadModel, getCurrentBase64Image} from './renderer.js';
 import {setRotationListener, RotatorPayload, setRotation} from '@components/Simulation/rotator';
 import {StoreState} from '@state/types';
 import {changeAutoplaySimulation, changeSimulation, rotateSimulation} from "@state/actions/simulation";
 import {connect} from 'react-redux';
 import {GetSimulationFileByName} from '@request/simulation';
 import {ChangeEvent} from 'react';
+import Snapshot from "@components/Simulation/Snapshot";
+import {sendMessage} from "@state/actions/room";
+import {MessageType} from "@request/types/sockets";
 
 const styles = require('./styles.scss');
 
@@ -16,6 +19,8 @@ interface SimulationProps extends ReturnType<typeof stateToProps>, ReturnType<ty
 interface SimulationState {
     url?: string;
     fileNumberInputValue: string;
+    snapshotBase64Image: string;
+    snapshotVisible: boolean;
 }
 
 class Simulation extends React.Component<SimulationProps, SimulationState> {
@@ -29,14 +34,18 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         super(props);
         this.state = {
             url: '',
-            fileNumberInputValue: '00001'
+            fileNumberInputValue: '',
+            snapshotBase64Image: '',
+            snapshotVisible: false
         };
         this.containerRef = React.createRef();
         this.onRotate = this.onRotate.bind(this);
         this.onFileNumberChange = this.onFileNumberChange.bind(this);
         this.getSimulationDataFromFile = this.getSimulationDataFromFile.bind(this);
         this.playPauseSimulation = this.playPauseSimulation.bind(this);
-        this.getSimulationDataFromFile();
+        this.onSnapshotClick = this.onSnapshotClick.bind(this);
+        this.onSnapshotClose = this.onSnapshotClose.bind(this);
+        this.sendImageMessage = this.sendImageMessage.bind(this);
     }
 
     onFileNumberChange(event: ChangeEvent<HTMLInputElement>) {
@@ -76,12 +85,43 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         })
     }
 
+    onSnapshotClick() {
+        this.setState({
+            ...this.state,
+            snapshotVisible: true,
+            snapshotBase64Image: getCurrentBase64Image()
+        });
+    }
+
+    onSnapshotClose() {
+        this.setState({
+            ...this.state,
+            snapshotVisible: false,
+            snapshotBase64Image: ''
+        });
+    }
+
+    sendImageMessage(content: string) {
+        this.props.sendMessage({
+            content,
+            type: MessageType.BASE64IMAGE,
+            author: this.props.userName,
+            room: location.href.split("/")[4]
+        })
+    }
+
     render() {
         return (
             <div className={styles.simulation}>
+                {this.state.snapshotVisible && <Snapshot base64Image={this.state.snapshotBase64Image} onClose={this.onSnapshotClose} sendMessage={this.sendImageMessage} />}
                 <div className={styles.controls}>
                     <h2>Simulation data</h2>
                     <div className={'input-group'}>
+                        <div className={'input-group-prepend'}>
+                            <button className={'btn btn-outline'} onClick={this.onSnapshotClick}>
+                                Snapshot
+                            </button>
+                        </div>
                         <input className={'form-control'} type="text" placeholder={'Type simulation file number'}
                                value={this.state.fileNumberInputValue} onChange={this.onFileNumberChange}
                                disabled={this.props.autoPlay}/>
@@ -115,7 +155,7 @@ const
         rotateSimulation: rotateSimulation(dispatch),
         changeSimulation: changeSimulation(dispatch),
         changeAutoplaySimulation: changeAutoplaySimulation(dispatch),
-        dispatch
+        sendMessage: sendMessage(dispatch)
     });
 
 export default connect(
