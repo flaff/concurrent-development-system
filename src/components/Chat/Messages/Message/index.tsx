@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import {Moment} from 'moment';
 import Time from "@components/Chat/Messages/Time";
+import {MessageType} from "@request/types/sockets";
 
 const styles = require('./styles.scss');
 
@@ -20,6 +21,7 @@ interface MessageProps {
     pending?: boolean;
     first?: boolean;
     order?: MessageOrder;
+    type: MessageType;
     children: string;
 }
 
@@ -39,21 +41,21 @@ const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
         }
     },
 
-    shouldShowName = (order?: MessageOrder, messageOfUser?: boolean) => {
-        return (order === MessageOrder.ONLY || order === MessageOrder.FIRST) && !messageOfUser;
+    shouldShowName = (type: MessageType, order?: MessageOrder, messageOfUser?: boolean) => {
+        return type !== MessageType.SERVER && (order === MessageOrder.ONLY || order === MessageOrder.FIRST) && !messageOfUser;
     };
 
 const
     Message = (props: MessageProps) => (
         <div>
-            {shouldShowName(props.order, props.ownMessage) &&
+            {shouldShowName(props.type, props.order, props.ownMessage) &&
                 <div className={styles.author}>{props.author}</div>
             }
-            <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage})}>
+            <div className={classNames(styles.messageRow, {[styles.self]: props.ownMessage, [styles.server]: props.type === MessageType.SERVER})}>
                 <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>
                     <Time time={props.time} now={props.now} />
                 </div>
-                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage, [styles.pending]: props.pending})}>
+                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), {[styles.self]: props.ownMessage, [styles.pending]: props.pending, [styles.server]: props.type === MessageType.SERVER})}>
                     {props.children}
                 </div>
             </div>

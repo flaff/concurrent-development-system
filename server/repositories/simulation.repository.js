@@ -1,6 +1,12 @@
 let readline = require('readline');
 let stream = require('stream');
 
+const flattenArray = (arrayOfArrays) => {
+    const result = [];
+    arrayOfArrays.forEach(array => array.forEach(element => result.push(element)));
+    return result;
+};
+
 class Node {
     constructor(id, x, y, z, T) {
         this.Id = id;
@@ -24,9 +30,98 @@ class ElementSolid {
         this.N7 = n7;
         this.N8 = n8;
     }
+
+    toSquares() {
+        return [
+            // bottom
+            [
+                this.N1,
+                this.N2,
+                this.N3,
+                this.N4
+            ],
+            // down
+            [
+
+                this.N5,
+                this.N6,
+                this.N7,
+                this.N8
+            ]
+        ]
+    }
 }
 
 module.exports = function (fs) {
+    const elementSolidToSquares = (es) => [
+            // bottom
+            [es.N1, es.N2, es.N3, es.N4],
+            // down
+            [es.N5, es.N6, es.N7, es.N8],
+            // x side left
+            [es.N1, es.N5, es.N8, es.N4],
+            // x side right
+            [es.N2, es.N6, es.N7, es.N3],
+            // z side front
+            [es.N4, es.N8, es.N7, es.N3],
+            // z side back
+            [es.N1, es.N5, es.N6, es.N2]
+        ],
+
+        elementSolidToTriangles = (es) => flattenArray(
+            elementSolidToSquares(es).map((s) => [
+                [s[0], s[1], s[2]],
+                [s[0], s[2], s[3]]
+            ])
+        ),
+
+        createThreeJSJson = (xyzArray, tempArray, minXYZTArray, maxXYZTArray) => ({
+            "metadata": {"version": 4, "type": "BufferGeometry"},
+            "uuid": "AF2ADB07-FBC5-4BAE-AD60-123456789ABC",
+            "type": "BufferGeometry",
+            "data": {
+                "attributes": {
+                    "position": {
+                        "itemSize": 3,
+                        "type": "Float32Array",
+                        "array": xyzArray
+                    },
+                    "temperature": {
+                        "itemSize": 3,
+                        "type": "Float32Array",
+                        "array": tempArray
+                    },
+                    "minXYZT": {
+                        "itemSize": 4,
+                        "type": "Float32Array",
+                        "array": minXYZTArray
+                    },
+                    "maxXYZT": {
+                        "itemSize": 4,
+                        "type": "Float32Array",
+                        "array": maxXYZTArray
+                    }
+                }
+            }
+        }),
+
+        trianglesToThreeJSJson = (arrayOfTriangles, scale = 100) =>
+                createThreeJSJson(
+                    flattenArray(
+                        arrayOfTriangles.map(triangle =>
+                            flattenArray(
+                                triangle.map(node => [node.X, node.Y, node.Z].map(n => n * scale))
+                            )
+                        )
+                    ),
+                    flattenArray(
+                        arrayOfTriangles.map(triangle =>
+                            triangle.map(node => Number(node.T))
+                        )
+                    )
+                );
+
+
     let getFileByName = (fileName) => {
         return new Promise((resolve, reject) => {
             try {
@@ -78,6 +173,9 @@ module.exports = function (fs) {
     };
 
     return {
-        getFileByName: getFileByName
+        getFileByName: getFileByName,
+        flattenArray: flattenArray,
+        elementSolidToTriangles: elementSolidToTriangles,
+        trianglesToThreeJSJson: trianglesToThreeJSJson
     }
 };

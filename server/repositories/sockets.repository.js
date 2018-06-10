@@ -59,6 +59,13 @@ module.exports = function (io) {
             io.to(socketData.sessionId).emit('ROTATED_SIMULATION', socketData);
         });
 
+        socket.on('CHANGE_SIMULATION', function (socketData) {
+            console.log('[' + new Date().toUTCString() + ']', socketData, 'CHANGE_SIMULATION');
+            io.to(socketData.sessionId).emit('CHANGED_SIMULATION', {
+                url: 'http://localhost:3001/api/simulation/' + socketData.name
+            });
+        });
+
         function onCreateSessionMessage(sessionData, socketEventData, author, content, consoleLogText) {
             socket.join(sessionData._id);
             let messageItem = {

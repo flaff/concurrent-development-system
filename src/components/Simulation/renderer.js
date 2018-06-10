@@ -3,14 +3,15 @@ import {attachRotator, onWindowResize as onRotatorWindowResize, setRotation, app
 
 // if ( ! Detector.webgl ) { Detector.addGetWebGLMessage(); }
 // var stats;
-var camera, scene, renderer, lut, legendLayout;
+var camera, scene, renderer, lut;
 var position;
 var mesh;
-var colorMap;
-var numberOfColors;
+var colorMap = 'rainbow';
+var numberOfColors = 512;
+var legendLayout = 'vertical';
 var container;
 
-var cameraZ = 100;
+var cameraZ = 30;
 
 function init(containerElement) {
     container = containerElement;
@@ -27,11 +28,7 @@ function init(containerElement) {
     var ambientLight = new THREE.AmbientLight( 0x444444 );
     ambientLight.name = 'ambientLight';
     scene.add( ambientLight );
-    colorMap = 'rainbow';
-    numberOfColors = 512;
-    legendLayout = 'vertical';
-    loadModel( colorMap, numberOfColors, legendLayout );
-    camera.position.x = 10;
+    camera.position.x = 0;
     camera.position.y = 0;
     camera.position.z = cameraZ;
     // var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
@@ -72,9 +69,9 @@ function render() {
     renderer.render( scene, camera );
 }
 var center = new THREE.Vector3();
-function loadModel ( colorMap, numberOfColors, legendLayout ) {
+function loadModel ( url ) {
     var loader = new THREE.BufferGeometryLoader();
-    loader.load( "/models/json/temperature.json", function( geometry ) {
+    loader.load( url, function( geometry ) {
         // debugger;
         geometry.computeVertexNormals();
         geometry.normalizeNormals();
@@ -108,7 +105,15 @@ function loadModel ( colorMap, numberOfColors, legendLayout ) {
         boundingBox.getCenter( center );
         if ( position === undefined ) {
             position = new THREE.Vector3(center.x, center.y, center.z);
+            // camera.position.x = center.x;
+            // camera.position.y = center.y;
+            // camera.position.z = center.z + 100;
+            // scene.translateX(-center.x);
+            // scene.translateY(-center.y);
+            // scene.translateZ(-center.z);
         }
+
+        geometry.translate(-center.x, -center.y, -center.z);
         scene.add ( mesh );
         if ( legendLayout ) {
             var legend;
@@ -137,40 +142,43 @@ function cleanScene () {
         }
     }
 }
-function onKeyDown ( e ) {
-    var maps = [ 'rainbow', 'cooltowarm', 'blackbody', 'grayscale' ];
-    var colorNumbers = ['16', '128', '256', '512' ];
-    if ( e.keyCode == 65 ) {
-        cleanScene();
-        var index = maps.indexOf( colorMap ) >= maps.length - 1 ? 0 : maps.indexOf( colorMap ) + 1;
-        colorMap = maps [ index ];
-        loadModel ( colorMap, numberOfColors, legendLayout );
-    } else if ( e.keyCode == 83 ) {
-        cleanScene();
-        var index = colorNumbers.indexOf( numberOfColors ) >= colorNumbers.length - 1 ? 0 : colorNumbers.indexOf( numberOfColors ) + 1;
-        numberOfColors = colorNumbers [ index ];
-        loadModel ( colorMap ,  numberOfColors, legendLayout );
-    } else if ( e.keyCode == 68 ) {
-        if ( ! legendLayout ) {
-            cleanScene();
-            legendLayout = 'vertical';
-            loadModel ( colorMap ,  numberOfColors, legendLayout );
-        } else {
-            cleanScene();
-            legendLayout = lut.setLegendOff();
-            loadModel ( colorMap ,  numberOfColors, legendLayout );
-        }
-    } else if ( e.keyCode == 70 ) {
-        cleanScene();
-        if ( ! legendLayout ) return false;
-        lut.setLegendOff();
-        if ( legendLayout == 'horizontal') {
-            legendLayout = 'vertical';
-        } else {
-            legendLayout = 'horizontal';
-        }
-        loadModel ( colorMap ,  numberOfColors, legendLayout );
-    }
-}
+// function onKeyDown ( e ) {
+//     var maps = [ 'rainbow', 'cooltowarm', 'blackbody', 'grayscale' ];
+//     var colorNumbers = ['16', '128', '256', '512' ];
+//     if ( e.keyCode == 65 ) {
+//         cleanScene();
+//         var index = maps.indexOf( colorMap ) >= maps.length - 1 ? 0 : maps.indexOf( colorMap ) + 1;
+//         colorMap = maps [ index ];
+//         loadModel ( colorMap, numberOfColors, legendLayout );
+//     } else if ( e.keyCode == 83 ) {
+//         cleanScene();
+//         var index = colorNumbers.indexOf( numberOfColors ) >= colorNumbers.length - 1 ? 0 : colorNumbers.indexOf( numberOfColors ) + 1;
+//         numberOfColors = colorNumbers [ index ];
+//         loadModel ( colorMap ,  numberOfColors, legendLayout );
+//     } else if ( e.keyCode == 68 ) {
+//         if ( ! legendLayout ) {
+//             cleanScene();
+//             legendLayout = 'vertical';
+//             loadModel ( colorMap ,  numberOfColors, legendLayout );
+//         } else {
+//             cleanScene();
+//             legendLayout = lut.setLegendOff();
+//             loadModel ( colorMap ,  numberOfColors, legendLayout );
+//         }
+//     } else if ( e.keyCode == 70 ) {
+//         cleanScene();
+//         if ( ! legendLayout ) return false;
+//         lut.setLegendOff();
+//         if ( legendLayout == 'horizontal') {
+//             legendLayout = 'vertical';
+//         } else {
+//             legendLayout = 'horizontal';
+//         }
+//         loadModel ( colorMap ,  numberOfColors, legendLayout );
+//     }
+// }
 
 export default init;
+export {
+    loadModel
+};

@@ -1,20 +1,25 @@
 import * as React from 'react';
-import render from './renderer.js';
+import render, {loadModel} from './renderer.js';
 import {setRotationListener, RotatorPayload, setRotation} from '@components/Simulation/rotator';
 import {StoreState} from '@state/types';
-import {rotateSimulation} from '@state/actions/simulation';
+import {changeSimulation, rotateSimulation} from "@state/actions/simulation";
 import {connect} from 'react-redux';
 import {GetSimulationFileByName} from '@request/simulation';
 import {ChangeEvent} from 'react';
 
+const styles = require('./styles.scss');
+
 interface SimulationProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
-    data?: any;
+    url: string;
 }
 
-class Simulation extends React.Component<SimulationProps> {
+interface SimulationState {
+    url?: string;
+    fileNumberInputValue: string;
+}
+
+class Simulation extends React.Component<SimulationProps, SimulationState> {
     containerRef: any;
-    simulationData: any;
-    fileNumber: any;
 
     onRotate(payload: RotatorPayload) {
         this.props.rotateSimulation(payload);
@@ -22,6 +27,10 @@ class Simulation extends React.Component<SimulationProps> {
 
     constructor(props: SimulationProps) {
         super(props);
+        this.state = {
+            url: '',
+            fileNumberInputValue: ''
+        };
         this.containerRef = React.createRef();
         this.onRotate = this.onRotate.bind(this);
         this.onFileNumberChange = this.onFileNumberChange.bind(this);
@@ -29,7 +38,10 @@ class Simulation extends React.Component<SimulationProps> {
     }
 
     onFileNumberChange(event: ChangeEvent<HTMLInputElement>) {
-        this.fileNumber = event.target.value;
+        this.setState({
+            ...this.state,
+            fileNumberInputValue: event.target.value
+        })
     }
 
     componentDidMount() {
@@ -39,29 +51,37 @@ class Simulation extends React.Component<SimulationProps> {
 
     componentWillReceiveProps(props: SimulationProps) {
         setRotation({x: props.rotateX, y: props.rotateY});
+        if (props.url && props.url !== this.state.url) {
+            this.setState({
+                ...this.state,
+                url: props.url
+            });
+            loadModel(props.url);
+        }
     }
 
     getSimulationDataFromFile() {
-        GetSimulationFileByName(this.fileNumber).then((data: any) => {
-            this.simulationData = data;
+        this.props.changeSimulation({
+            name: this.state.fileNumberInputValue
         });
     }
 
     render() {
         return (
-            <div style={{padding: '20px'}}>
-                <hr/>
-                <h2>Simulation data</h2>
-                <div className={'input-group'}>
-                    <input className={'form-control'} type="text" placeholder={'Type simulation file number'}
-                           value={this.fileNumber} onChange={this.onFileNumberChange}/>
-                    <div className={'input-group-append'}>
-                        <button className={'btn btn-success'} onClick={this.getSimulationDataFromFile}>
-                            Get file
-                        </button>
+            <div className={styles.simulation}>
+                <div className={styles.controls}>
+                    <h2>Simulation data</h2>
+                    <div className={'input-group'}>
+                        <input className={'form-control'} type="text" placeholder={'Type simulation file number'}
+                               value={this.state.fileNumberInputValue} onChange={this.onFileNumberChange}/>
+                        <div className={'input-group-append'}>
+                            <button className={'btn btn-success'} onClick={this.getSimulationDataFromFile}>
+                                Get file
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div style={{width: '100%', height: '100vh'}} ref={this.containerRef}/>
+                <div className={styles.renderView} ref={this.containerRef}/>
             </div>
         );
     }
@@ -70,11 +90,13 @@ class Simulation extends React.Component<SimulationProps> {
 const
     stateToProps = (state: StoreState) => ({
         rotateX: state.simulation.rotateX,
-        rotateY: state.simulation.rotateY
+        rotateY: state.simulation.rotateY,
+        url: state.simulation.url
     }),
 
     dispatchToProps = (dispatch) => ({
         rotateSimulation: rotateSimulation(dispatch),
+        changeSimulation: changeSimulation(dispatch),
         dispatch
     });
 

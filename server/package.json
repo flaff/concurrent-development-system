@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "start-debug": "node --inspect server.js",
     "run": "ts-node src/index.ts",
+    "run-debug": "node --inspect=9222 -r ts-node/register src/index.ts",
     "build": "tsc"
   },
   "author": "",

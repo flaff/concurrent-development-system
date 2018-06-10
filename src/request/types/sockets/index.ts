@@ -18,12 +18,20 @@ export type RotateSimulationPayload = {
     x: number;
     y: number;
 };
-
 export type RotatedSimulationPayload = RotateSimulationPayload;
+
+export type ChangeSimulationPayload = {
+    name: string;
+};
+
+export type ChangedSimulationPayload = {
+    url: string;
+};
 
 export const enum MessageType {
     TEXT = 'TEXT',
-    BASE64IMAGE = 'BASE64IMAGE'
+    BASE64IMAGE = 'BASE64IMAGE',
+    SERVER = 'SERVER'
 }
 
 export type SendMessagePayload = {

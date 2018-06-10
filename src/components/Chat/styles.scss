@@ -1,0 +1,9 @@
+:local {
+  $navbar-height: 56px;
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - #{$navbar-height})
+  }
+}

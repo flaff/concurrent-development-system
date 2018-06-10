@@ -4,6 +4,7 @@ import Message, {MessageOrder} from './Message/index';
 import {getMessageOrder, isMessageOfUser} from './utils';
 import * as moment from 'moment';
 import {Moment} from "moment";
+import {MessageType} from "@request/types/sockets";
 
 const styles = require('./styles.scss');
 
@@ -12,6 +13,7 @@ export interface MessageModel {
     content: string;
     time: number;
     pending?: boolean;
+    type: MessageType;
 }
 
 interface MessagesProps {
@@ -31,6 +33,7 @@ const Messages = (props: MessagesProps) => (
                     order={getMessageOrder(props.messages, index)}
                     time={moment(message.time)}
                     now={props.now}
+                    type={message.type}
                     pending={message.pending}
                     key={index}
                 >

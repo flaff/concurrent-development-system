@@ -1,0 +1,23 @@
+:local {
+  $navbar-height: 56px;
+
+  .simulation {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - #{$navbar-height});
+    max-height: calc(100vh - #{$navbar-height});
+    overflow-y: auto;
+  }
+
+  .controls {
+    padding: 15px 15px 0 15px;
+  }
+
+  .renderView {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+}

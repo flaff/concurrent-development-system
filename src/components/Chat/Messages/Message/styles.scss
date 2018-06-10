@@ -49,6 +49,19 @@ $self-message-fc: #fff;
       justify-content: flex-end;
     }
 
+    &.server {
+      flex-wrap: wrap;
+      padding-right: 0;
+      .time {
+        width: 100%;
+        text-align: center;
+        font-size: 9px;
+        color: dimgray;
+        margin-top: -10px;
+        margin-bottom: 3px;
+      }
+    }
+
     &:hover {
       .time {
         opacity: 1;
@@ -101,6 +114,14 @@ $self-message-fc: #fff;
       &.last, &.between {
         border-top-right-radius: $message-border-radius / 3;
       }
+    }
+
+    &.server {
+      background: none;
+      color: dimgray;
+      font-size: 9px;
+      width: 100%;
+      text-align: center;
     }
   }
 }

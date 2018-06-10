@@ -4,6 +4,7 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
     const authRepository = require('../repositories/auth.repository')(bcrypt, jwt);
     const simulationRepository = require('../repositories/simulation.repository')(fs);
     const sessionsRepository = require('../repositories/session.repository')(io);
+    const {elementSolidToTriangles, flattenArray, trianglesToThreeJSJson} = simulationRepository;
 
     router
         .route('/auth/register')
@@ -68,17 +69,18 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
         .get((req, res) => {
             let fileName = req.params.fileName;
 
-            simulationRepository.getFileByName(fileName).then((result) => {
-                res.status(200).json({
-                    status: true,
-                    fileData: result
-                });
-            }).catch((err) => {
-                res.status(401).json({
+            simulationRepository.getFileByName(fileName)
+                .then(({elementSolid}) => elementSolid)
+                .then((arrayOfSolidElements) => arrayOfSolidElements.filter((es) => !isNaN(Number(es.Id)))) // filter out invalid elements
+                .then((arrayOfSolidElementsWithNodes) => arrayOfSolidElementsWithNodes.map(elementSolidToTriangles))
+                .then((arrayOfSolidElementsWithArrayOfTriangles) => flattenArray(arrayOfSolidElementsWithArrayOfTriangles))
+                .then((arrayOfTriangles) => trianglesToThreeJSJson(arrayOfTriangles))
+                .then((json) => res.status(200).json(json))
+                .catch((err) => res.status(401).json({
                     status: false,
                     err: err
-                });
-            });
+                })
+            );
         });
 
     router

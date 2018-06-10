@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import * as classnames from 'classnames';
 import Messages, {MessageModel} from '@components/Chat/Messages';
 import mockMessages from './mock';
 import {ChangeEvent, KeyboardEvent} from 'react';
@@ -8,6 +9,8 @@ import {sendMessage} from '@state/actions/room';
 import {connect} from 'react-redux';
 import {StoreState} from '@state/types';
 import {MessageType} from '@request/types/sockets';
+
+const styles = require('./styles.scss');
 
 type Moment = moment.Moment;
 
@@ -82,7 +85,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     render() {
         return (
-            <div className={this.props.className}>
+            <div className={classnames(this.props.className, styles.chat)}>
                 <Messages messages={this.props.messages} user={this.props.user} now={this.state.now}/>
                 <div className="input-group">
                     <input

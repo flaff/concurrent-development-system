@@ -4,15 +4,16 @@ import {connect} from 'react-redux';
 import {StoreState} from '@state/types';
 import Simulation from '@components/Simulation';
 import {getAllMessages, joinRoom, leaveRoom, sendMessage} from "@state/actions/room";
+const styles = require('./SessionRoom.scss');
 
-interface RoomProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
+interface SessionProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
 }
 
-interface RoomState {
+interface SessionState {
     roomName: string;
 }
 
-class SessionRoom extends React.Component<RoomProps, RoomState> {
+class SessionRoom extends React.Component<SessionProps, SessionState> {
     constructor(props) {
         super(props);
         //socket.emit("change_room", {Login: this.props.userName, roomId: props.match.params.roomId});
@@ -27,7 +28,7 @@ class SessionRoom extends React.Component<RoomProps, RoomState> {
 
     render() {
         return (
-            <div>
+            <div className={styles.sessionRoom}>
                 <Chat user={this.props.userName} sendMessage={this.props.sendMessage} messages={this.props.messages}/>
                 <Simulation/>
             </div>

@@ -1,3 +1,5 @@
+import {MessageType} from "../../../src/request/types/sockets";
+
 export type JoinRoomPayload = {
     user: string;
     room: string;
@@ -15,11 +17,6 @@ export type RotateSimulationPayload = {
 };
 
 export type RotatedSimulationPayload = RotateSimulationPayload;
-
-export const enum MessageType {
-    TEXT = 'TEXT',
-    BASE64IMAGE = 'BASE64IMAGE'
-}
 
 export type SendMessagePayload = {
     content: string;
