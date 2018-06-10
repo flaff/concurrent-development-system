@@ -5,7 +5,7 @@ import {attachRotator, onWindowResize as onRotatorWindowResize, setRotation, app
 // var stats;
 var camera, scene, renderer, lut;
 var position;
-var mesh;
+var mesh, legend;
 var colorMap = 'rainbow';
 var numberOfColors = 512;
 var legendLayout = 'vertical';
@@ -117,12 +117,8 @@ function loadModel ( url ) {
         geometry.translate(-center.x, -center.y, -center.z);
         scene.add ( mesh );
         if ( legendLayout ) {
-            var legend;
-            if ( legendLayout == 'horizontal' ) {
-                legend = lut.setLegendOn( { 'layout':'horizontal', 'position': { 'x': 0, 'y': 0, 'z': cameraZ } } );
-            } else {
-                legend = lut.setLegendOn();
-            }
+            legend && scene.remove(legend);
+            legend = lut.setLegendOn( { 'layout':'horizontal', 'position': { 'x': 0, 'y': 6, 'z': -10 } } );
             scene.add ( legend );
             var labels = lut.setLegendLabels( { 'title': 'Temperature', 'um': '*C', 'ticks': 5 } );
             scene.add ( labels['title'] );

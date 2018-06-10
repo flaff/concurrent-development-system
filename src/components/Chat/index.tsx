@@ -3,15 +3,15 @@ import * as moment from 'moment';
 import * as classnames from 'classnames';
 import Dropzone from 'react-dropzone';
 import Messages, {MessageModel} from '@components/Chat/Messages';
-import mockMessages from './mock';
 import {ChangeEvent, KeyboardEvent} from 'react';
 import {isAnEnter} from '@components/Chat/utils';
 import {sendMessage} from '@state/actions/room';
-import {connect} from 'react-redux';
-import {StoreState} from '@state/types';
 import {MessageType} from '@request/types/sockets';
+import {addEmojis} from "@components/Chat/emojis";
 
 const styles = require('./styles.scss');
+
+
 
 type Moment = moment.Moment;
 
@@ -52,7 +52,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             content = this.state.inputValue;
 
         this.props.sendMessage({
-            content,
+            content: addEmojis(content),
             author: this.props.user,
             type: MessageType.TEXT,
             room: location.href.split('/')[4]

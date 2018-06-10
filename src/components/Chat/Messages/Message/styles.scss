@@ -128,5 +128,11 @@ $self-message-fc: #fff;
       padding: 0;
       overflow: hidden;
     }
+
+    &.emoji {
+      padding: 0;
+      background: none;
+      font-size: 25px;
+    }
   }
 }

@@ -29,13 +29,14 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         super(props);
         this.state = {
             url: '',
-            fileNumberInputValue: ''
+            fileNumberInputValue: '00001'
         };
         this.containerRef = React.createRef();
         this.onRotate = this.onRotate.bind(this);
         this.onFileNumberChange = this.onFileNumberChange.bind(this);
         this.getSimulationDataFromFile = this.getSimulationDataFromFile.bind(this);
         this.playPauseSimulation = this.playPauseSimulation.bind(this);
+        this.getSimulationDataFromFile();
     }
 
     onFileNumberChange(event: ChangeEvent<HTMLInputElement>) {

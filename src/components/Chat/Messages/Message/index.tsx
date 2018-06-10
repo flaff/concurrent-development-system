@@ -1,18 +1,19 @@
-import * as React from 'react';
-import * as classNames from 'classnames';
-import {Moment} from 'moment';
+import * as React from "react";
+import * as classNames from "classnames";
+import {Moment} from "moment";
 import Time from "@components/Chat/Messages/Time";
 import {MessageType} from "@request/types/sockets";
-import Image from '@components/Image';
+import Image from "@components/Image";
+import {isAnEmojiOnly} from "@components/Chat/emojis";
 
 
-const styles = require('./styles.scss');
+const styles = require("./styles.scss");
 
 export enum MessageOrder {
-    ONLY = 'ONLY',
-    FIRST = 'FIRST',
-    BETWEEN = 'BETWEEN',
-    LAST = 'LAST'
+    ONLY = "ONLY",
+    FIRST = "FIRST",
+    BETWEEN = "BETWEEN",
+    LAST = "LAST"
 }
 
 interface MessageProps {
@@ -48,29 +49,37 @@ const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
     };
 
 const messageTypeToClassName = (type: MessageType) => {
-    switch (type) {
-        case MessageType.BASE64IMAGE:
-            return styles.image;
-        case MessageType.SERVER:
-            return styles.server;
-        case MessageType.TEXT:
-            return '';
-    }
-};
+        switch (type) {
+            case MessageType.BASE64IMAGE:
+                return styles.image;
+            case MessageType.SERVER:
+                return styles.server;
+            case MessageType.TEXT:
+                return "";
+        }
+    },
+    isAnEmoji = (type: MessageType, content: string) =>
+        type === MessageType.TEXT && isAnEmojiOnly(content);
 
 const
     Message = (props: MessageProps) => (
         <div>
             {shouldShowName(props.type, props.order, props.ownMessage) &&
-                <div className={styles.author}>{props.author}</div>
+            <div className={styles.author}>{props.author}</div>
             }
-            <div className={classNames(styles.messageRow, messageTypeToClassName(props.type), {[styles.self]: props.ownMessage})}>
+            <div
+                className={classNames(styles.messageRow, messageTypeToClassName(props.type), {[styles.self]: props.ownMessage})}>
                 <div className={classNames(styles.time, {[styles.self]: props.ownMessage})}>
-                    <Time time={props.time} now={props.now} />
+                    <Time time={props.time} now={props.now}/>
                 </div>
-                <div className={classNames(styles.bubble, messageOrderToClassName(props.order), messageTypeToClassName(props.type), {[styles.self]: props.ownMessage, [styles.pending]: props.pending})}>
+                <div
+                    className={classNames(styles.bubble, messageOrderToClassName(props.order), messageTypeToClassName(props.type), {
+                        [styles.self]: props.ownMessage,
+                        [styles.pending]: props.pending,
+                        [styles.emoji]: isAnEmoji(props.type, props.content)
+                    })}>
                     {props.type === MessageType.BASE64IMAGE
-                        ? <Image src={props.content} />
+                        ? <Image src={props.content}/>
                         : props.content}
                 </div>
             </div>
