@@ -1,5 +1,7 @@
 const Session = require('../models/session.model');
 const sessionRepository = require('../repositories/session.repository')();
+const toFiveDigitString = (i) => Array(6 - String(i + 1).length).join('0') + String(i),
+    AUTOPLAY_INTERVAL = 500-;
 
 module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
@@ -59,12 +61,71 @@ module.exports = function (io) {
             io.to(socketData.sessionId).emit('ROTATED_SIMULATION', socketData);
         });
 
+        // runtime only TODO db
+        const currentStepOfSimulations = {};
+        const autoPlaySimulationSessions = {};
+
         socket.on('CHANGE_SIMULATION', function (socketData) {
             console.log('[' + new Date().toUTCString() + ']', socketData, 'CHANGE_SIMULATION');
+
+            if (!isNaN(+socketData.name)) {
+                socketData.name = toFiveDigitString(+socketData.name);
+            }
+
+            currentStepOfSimulations[socketData.sessionId] = socketData.name;
+
             io.to(socketData.sessionId).emit('CHANGED_SIMULATION', {
+                name: socketData.name,
                 url: 'http://localhost:3001/api/simulation/' + socketData.name
             });
         });
+
+        socket.on('CHANGE_AUTOPLAY_SIMULATION', function (socketData) {
+            console.log('[' + new Date().toUTCString() + ']', socketData, 'CHANGE_SIMULATION by', socketData.userName);
+            if (socketData.autoPlay) {
+                autoPlaySimulationSessions[socketData.sessionId] = socketData.autoPlay;
+            } else {
+                delete autoPlaySimulationSessions[socketData.sessionId];
+            }
+
+            io.to(socketData.sessionId).emit('CHANGED_AUTOPLAY_SIMULATION', {
+                autoPlay: socketData.autoPlay
+            });
+        });
+
+        const autoPlaySimulations = () => {
+            const sessionIds = Object.keys(autoPlaySimulationSessions);
+            for (let i = 0; i < sessionIds.length; i++) {
+                const
+                    sessionId = sessionIds[i],
+                    currentName = currentStepOfSimulations[sessionId] || 1,
+                    nextName = toFiveDigitString(+currentName + 10);
+
+                if (!autoPlaySimulationSessions[sessionId]) {
+                    continue;
+                }
+
+                // prevent from getting unexisting simulation file; send AUTOPLAY = false
+                if (+nextName > 1200) {
+                    delete autoPlaySimulationSessions[sessionId];
+                    io.to(sessionId).emit('CHANGED_AUTOPLAY_SIMULATION', {
+                        autoPlay: false
+                    });
+                    continue;
+                }
+
+                console.log('[AUTO] CHANGED_SIMULATION', sessionId, 'from', currentName, 'to', nextName);
+
+                currentStepOfSimulations[sessionId] = nextName;
+                io.to(sessionId).emit('CHANGED_SIMULATION', {
+                    name: nextName,
+                    url: 'http://localhost:3001/api/simulation/' + nextName
+                });
+            }
+        };
+
+        setInterval(autoPlaySimulations, AUTOPLAY_INTERVAL);
+
 
         function onCreateSessionMessage(sessionData, socketEventData, author, content, consoleLogText) {
             socket.join(sessionData._id);

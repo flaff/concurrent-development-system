@@ -16,8 +16,15 @@ import SessionSimulation from './containers/SessionRoom';
 
 import history from './history';
 import UnauthorizedRedirect from './routes';
-import {OnMessage, OnJoinedRoom, OnLeftRoom, OnRotatedSimulation, OnChangedSimulation} from "@request/simulation";
-import {CHANGED_SIMULATION, ROTATED_SIMULATION} from "@state/constants/simulation";
+import {
+    OnMessage,
+    OnJoinedRoom,
+    OnLeftRoom,
+    OnRotatedSimulation,
+    OnChangedSimulation,
+    OnChangedAutoplaySimulation
+} from "@request/simulation";
+import {CHANGED_AUTOPLAY_SIMULATION, CHANGED_SIMULATION, ROTATED_SIMULATION} from "@state/constants/simulation";
 import {JOINED_ROOM, LEFT_ROOM, MESSAGE} from '@state/constants/room';
 import sessionsReducer from '@state/reducers/sessions';
 import {SESSION_REFRESH} from '@state/constants/sessions';
@@ -45,6 +52,7 @@ const
 
 OnRotatedSimulation((p) => store.dispatch(ROTATED_SIMULATION(p)));
 OnChangedSimulation((p) => store.dispatch(CHANGED_SIMULATION(p)));
+OnChangedAutoplaySimulation((p) => store.dispatch(CHANGED_AUTOPLAY_SIMULATION(p)));
 OnLeftRoom((p) => store.dispatch(LEFT_ROOM(p)));
 OnJoinedRoom((p) => store.dispatch(JOINED_ROOM(p)));
 OnMessage((p) => store.dispatch(MESSAGE(p)));

@@ -24,8 +24,18 @@ export type ChangeSimulationPayload = {
     name: string;
 };
 
+export type ChangeAutoplaySimulationPayload = {
+    userName: string;
+    autoPlay: boolean;
+};
+
+export type ChangedAutoplaySimulationPayload = {
+    autoPlay: boolean;
+}
+
 export type ChangedSimulationPayload = {
     url: string;
+    name: string;
 };
 
 export const enum MessageType {

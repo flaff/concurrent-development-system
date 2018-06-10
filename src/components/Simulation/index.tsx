@@ -2,7 +2,7 @@ import * as React from 'react';
 import render, {loadModel} from './renderer.js';
 import {setRotationListener, RotatorPayload, setRotation} from '@components/Simulation/rotator';
 import {StoreState} from '@state/types';
-import {changeSimulation, rotateSimulation} from "@state/actions/simulation";
+import {changeAutoplaySimulation, changeSimulation, rotateSimulation} from "@state/actions/simulation";
 import {connect} from 'react-redux';
 import {GetSimulationFileByName} from '@request/simulation';
 import {ChangeEvent} from 'react';
@@ -35,6 +35,7 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         this.onRotate = this.onRotate.bind(this);
         this.onFileNumberChange = this.onFileNumberChange.bind(this);
         this.getSimulationDataFromFile = this.getSimulationDataFromFile.bind(this);
+        this.playPauseSimulation = this.playPauseSimulation.bind(this);
     }
 
     onFileNumberChange(event: ChangeEvent<HTMLInputElement>) {
@@ -54,7 +55,8 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         if (props.url && props.url !== this.state.url) {
             this.setState({
                 ...this.state,
-                url: props.url
+                url: props.url,
+                fileNumberInputValue: props.simulationName ? props.simulationName : this.state.fileNumberInputValue
             });
             loadModel(props.url);
         }
@@ -66,6 +68,13 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         });
     }
 
+    playPauseSimulation() {
+        this.props.changeAutoplaySimulation({
+            userName: this.props.userName,
+            autoPlay: !this.props.autoPlay
+        })
+    }
+
     render() {
         return (
             <div className={styles.simulation}>
@@ -73,10 +82,14 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
                     <h2>Simulation data</h2>
                     <div className={'input-group'}>
                         <input className={'form-control'} type="text" placeholder={'Type simulation file number'}
-                               value={this.state.fileNumberInputValue} onChange={this.onFileNumberChange}/>
+                               value={this.state.fileNumberInputValue} onChange={this.onFileNumberChange}
+                               disabled={this.props.autoPlay}/>
                         <div className={'input-group-append'}>
-                            <button className={'btn btn-success'} onClick={this.getSimulationDataFromFile}>
+                            <button className={'btn btn-success'} onClick={this.getSimulationDataFromFile} disabled={this.props.autoPlay}>
                                 Get file
+                            </button>
+                            <button className={'btn btn-outline-secondary'} onClick={this.playPauseSimulation}>
+                                {this.props.autoPlay ? 'Pause' : 'Auto Play'}
                             </button>
                         </div>
                     </div>
@@ -91,12 +104,16 @@ const
     stateToProps = (state: StoreState) => ({
         rotateX: state.simulation.rotateX,
         rotateY: state.simulation.rotateY,
-        url: state.simulation.url
+        autoPlay: state.simulation.autoPlay,
+        simulationName: state.simulation.name,
+        url: state.simulation.url,
+        userName: state.user.name
     }),
 
     dispatchToProps = (dispatch) => ({
         rotateSimulation: rotateSimulation(dispatch),
         changeSimulation: changeSimulation(dispatch),
+        changeAutoplaySimulation: changeAutoplaySimulation(dispatch),
         dispatch
     });
 

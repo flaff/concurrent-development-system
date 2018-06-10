@@ -5,7 +5,18 @@ const flattenArray = (arrayOfArrays) => {
     const result = [];
     arrayOfArrays.forEach(array => array.forEach(element => result.push(element)));
     return result;
-};
+},
+
+    cache = {};
+
+const
+    getFromCache = (key) => cache[key],
+    setCache = (key, content) => {
+        cache[key] = content;
+        return content;
+    },
+
+    toFiveDigitString = (i) => Array(6 - String(i).length).join('0') + String(i);
 
 class Node {
     constructor(id, x, y, z, T) {
@@ -126,7 +137,6 @@ module.exports = function (fs) {
         return new Promise((resolve, reject) => {
             try {
                 let filePath = './server/sim_files/temperature ' + fileName + '.k';
-                console.log(__dirname, filePath);
                 if (!fs.existsSync(filePath)) {
                     reject('File doesn\'t exist!');
                     return -1;
@@ -176,6 +186,9 @@ module.exports = function (fs) {
         getFileByName: getFileByName,
         flattenArray: flattenArray,
         elementSolidToTriangles: elementSolidToTriangles,
-        trianglesToThreeJSJson: trianglesToThreeJSJson
+        trianglesToThreeJSJson: trianglesToThreeJSJson,
+        setCache: setCache,
+        getFromCache: getFromCache,
+        toFiveDigitString: toFiveDigitString
     }
 };

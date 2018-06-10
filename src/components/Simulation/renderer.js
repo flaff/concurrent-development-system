@@ -78,13 +78,13 @@ function loadModel ( url ) {
         geometry.normalizeNormals();
         var material = new THREE.MeshLambertMaterial( {
             side: THREE.DoubleSide,
-            color: 0xF5F5F5,
+            color: 0xFCFCFC,
             vertexColors: THREE.VertexColors
         } );
         var lutColors = [];
 
         lut = new THREE.Lut( colorMap, numberOfColors );
-        lut.setMax( 2000 );
+        lut.setMax( 1500 );
         lut.setMin( 0 );
 
         for ( var i = 0; i < geometry.attributes.temperature.array.length; i++ ) {

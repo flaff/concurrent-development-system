@@ -4,7 +4,7 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
     const authRepository = require('../repositories/auth.repository')(bcrypt, jwt);
     const simulationRepository = require('../repositories/simulation.repository')(fs);
     const sessionsRepository = require('../repositories/session.repository')(io);
-    const {elementSolidToTriangles, flattenArray, trianglesToThreeJSJson} = simulationRepository;
+    const {elementSolidToTriangles, flattenArray, trianglesToThreeJSJson, getFromCache, setCache, toFiveDigitString} = simulationRepository;
 
     router
         .route('/auth/register')
@@ -69,12 +69,17 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
         .get((req, res) => {
             let fileName = req.params.fileName;
 
+            if (getFromCache(fileName)) {
+                return res.status(200).json(getFromCache(fileName));
+            }
+
             simulationRepository.getFileByName(fileName)
                 .then(({elementSolid}) => elementSolid)
                 .then((arrayOfSolidElements) => arrayOfSolidElements.filter((es) => !isNaN(Number(es.Id)))) // filter out invalid elements
                 .then((arrayOfSolidElementsWithNodes) => arrayOfSolidElementsWithNodes.map(elementSolidToTriangles))
                 .then((arrayOfSolidElementsWithArrayOfTriangles) => flattenArray(arrayOfSolidElementsWithArrayOfTriangles))
                 .then((arrayOfTriangles) => trianglesToThreeJSJson(arrayOfTriangles))
+                .then((json) => setCache(fileName, json))
                 .then((json) => res.status(200).json(json))
                 .catch((err) => res.status(401).json({
                     status: false,
@@ -82,6 +87,22 @@ module.exports = function (router, app, jwt, bcrypt, io, fs) {
                 })
             );
         });
+
+    const precacheSimulations = (from, to, every = 1) => {
+        for (let i = from; i <= to; i = i + every) {
+            const fileName = toFiveDigitString(i);
+            simulationRepository.getFileByName(fileName)
+                .then(({elementSolid}) => elementSolid)
+                .then((arrayOfSolidElements) => arrayOfSolidElements.filter((es) => !isNaN(Number(es.Id)))) // filter out invalid elements
+                .then((arrayOfSolidElementsWithNodes) => arrayOfSolidElementsWithNodes.map(elementSolidToTriangles))
+                .then((arrayOfSolidElementsWithArrayOfTriangles) => flattenArray(arrayOfSolidElementsWithArrayOfTriangles))
+                .then((arrayOfTriangles) => trianglesToThreeJSJson(arrayOfTriangles))
+                .then((json) => setCache(fileName, json))
+                .then(() => console.log('cached ' + fileName))
+        }
+    };
+
+    precacheSimulations(1, 1191, 10);
 
     router
         .route('/sessions')
