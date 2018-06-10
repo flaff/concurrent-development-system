@@ -8,6 +8,10 @@ export type JoinRoomPayload = {
     sessionId: string;
 };
 
+export type ShowInfoMessagesChangePayload = {
+    show: boolean;
+};
+
 export type JoinedRoomPayload = {
     user: string;
 };

@@ -3,7 +3,7 @@ import Chat from '@components/Chat';
 import {connect} from 'react-redux';
 import {StoreState} from '@state/types';
 import Simulation from '@components/Simulation';
-import {getAllMessages, joinRoom, leaveRoom, sendMessage} from "@state/actions/room";
+import {getAllMessages, joinRoom, sendMessage, showInfoMessagesChange} from "@state/actions/room";
 const styles = require('./SessionRoom.scss');
 
 interface SessionProps extends ReturnType<typeof stateToProps>, ReturnType<typeof dispatchToProps> {
@@ -29,7 +29,9 @@ class SessionRoom extends React.Component<SessionProps, SessionState> {
     render() {
         return (
             <div className={styles.sessionRoom}>
-                <Chat user={this.props.userName} sendMessage={this.props.sendMessage} messages={this.props.messages}/>
+                <Chat user={this.props.userName} messages={this.props.messages}
+                      showInfoMessages={this.props.showInfoMessages}
+                      showInfoMessagesChange={this.props.showInfoMessagesChange} sendMessage={this.props.sendMessage} />
                 <Simulation/>
             </div>
         );
@@ -40,13 +42,15 @@ const
     stateToProps = (state: StoreState) => ({
         userName: state.user.name,
         userId: state.user.id,
-        messages: state.room.messages
+        messages: state.room.messages,
+        showInfoMessages: state.room.showInfoMessages
     }),
 
     dispatchToProps = (dispatch) => ({
         joinRoom: joinRoom(dispatch),
         sendMessage: sendMessage(dispatch),
-        getAllMessages: getAllMessages(dispatch)
+        getAllMessages: getAllMessages(dispatch),
+        showInfoMessagesChange: showInfoMessagesChange(dispatch)
     });
 
 export default connect(

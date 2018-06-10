@@ -4,7 +4,7 @@ import {
     MessagePayload,
     LeftRoomPayload,
     SendMessagePayload,
-    JoinRoomPayload
+    JoinRoomPayload, ShowInfoMessagesChangePayload
 } from "@request/types/sockets";
 import {GetAllMessagesResponse} from "@request/types";
 
@@ -15,4 +15,5 @@ export const
     JOIN_ROOM = createActionCreator<JoinRoomPayload>('JOIN_ROOM'),
     JOINED_ROOM = createActionCreator<JoinedRoomPayload>('JOINED_ROOM'),
     LEAVE_ROOM = createActionCreator('LEAVE_ROOM'),
+    SHOW_INFO_MESSAGES_CHANGE = createActionCreator<ShowInfoMessagesChangePayload>('SHOW_INFO_MESSAGES_CHANGE'),
     LEFT_ROOM = createActionCreator<LeftRoomPayload>('LEFT_ROOM');

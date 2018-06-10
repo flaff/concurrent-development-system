@@ -1,6 +1,6 @@
 import {RoomState} from "@state/types/room";
 import {IAction} from "@state/constants/generic";
-import {GET_ALL_MESSAGES, LEAVE_ROOM} from "@state/constants/room";
+import {GET_ALL_MESSAGES, LEAVE_ROOM, SHOW_INFO_MESSAGES_CHANGE} from "@state/constants/room";
 import {JOIN_ROOM, JOINED_ROOM, MESSAGE} from "@state/constants/room";
 import {MessagePayload, JoinedRoomPayload, LeftRoomPayload, JoinRoomPayload} from "@request/types/sockets";
 import {GetAllMessagesResponse} from "@request/types";
@@ -9,10 +9,12 @@ const
     defaultState: RoomState = {
         name: '',
         messages: [],
-        id: ''
+        id: '',
+        showInfoMessages: true
     },
 
     leaveRoomReducer = (state: RoomState) => ({
+        ...state,
         id: '',
         name: '',
         messages: []
@@ -36,10 +38,18 @@ const
         messages: action.payload.Messages,
         name: action.payload.Name,
         id: action.payload._id
+    }),
+
+    showInfoMessagesChangeReducer = (state: RoomState, action: ReturnType<typeof SHOW_INFO_MESSAGES_CHANGE>): RoomState => ({
+        ...state,
+        showInfoMessages: action.payload.show
     });
 
 export default function roomReducer(state: RoomState, action: IAction<any>) {
     switch (action.type) {
+        case SHOW_INFO_MESSAGES_CHANGE.type:
+            return showInfoMessagesChangeReducer(state, action);
+
         case LEAVE_ROOM.type:
             return leaveRoomReducer(state);
 

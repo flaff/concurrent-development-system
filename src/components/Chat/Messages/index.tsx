@@ -19,6 +19,7 @@ export interface MessageModel {
 interface MessagesProps {
     messages: Array<MessageModel>;
     user: string;
+    showSystemMessages: boolean;
     currentTime?: number;
     now: Moment;
 }
@@ -28,6 +29,7 @@ const Messages = (props: MessagesProps) => (
         {props.messages.map(
             (message, index) =>
                 <Message
+                    showSystemMessages={props.showSystemMessages}
                     author={message.author}
                     ownMessage={isMessageOfUser(message, props.user)}
                     order={getMessageOrder(props.messages, index)}

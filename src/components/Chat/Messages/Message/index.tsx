@@ -26,6 +26,7 @@ interface MessageProps {
     order?: MessageOrder;
     type: MessageType;
     content: string;
+    showSystemMessages: boolean;
 }
 
 const messageOrderToClassName = (order: MessageOrder = MessageOrder.ONLY) => {
@@ -63,7 +64,7 @@ const messageTypeToClassName = (type: MessageType) => {
 
 const
     Message = (props: MessageProps) => (
-        <div>
+        <div style={{display: (!props.showSystemMessages && props.type === MessageType.SERVER) ? 'none' : 'block'}}>
             {shouldShowName(props.type, props.order, props.ownMessage) &&
             <div className={styles.author}>{props.author}</div>
             }

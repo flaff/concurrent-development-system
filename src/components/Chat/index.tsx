@@ -1,15 +1,15 @@
-import * as React from 'react';
-import * as moment from 'moment';
-import * as classnames from 'classnames';
-import Dropzone from 'react-dropzone';
-import Messages, {MessageModel} from '@components/Chat/Messages';
-import {ChangeEvent, KeyboardEvent} from 'react';
-import {isAnEnter} from '@components/Chat/utils';
-import {sendMessage} from '@state/actions/room';
-import {MessageType} from '@request/types/sockets';
+import * as React from "react";
+import * as moment from "moment";
+import * as classnames from "classnames";
+import Dropzone from "react-dropzone";
+import Messages, {MessageModel} from "@components/Chat/Messages";
+import {ChangeEvent, KeyboardEvent} from "react";
+import {isAnEnter} from "@components/Chat/utils";
+import {sendMessage, showInfoMessagesChange} from "@state/actions/room";
+import {MessageType} from "@request/types/sockets";
 import {addEmojis} from "@components/Chat/emojis";
 
-const styles = require('./styles.scss');
+const styles = require("./styles.scss");
 
 
 
@@ -19,7 +19,9 @@ interface ChatProps {
     user: string;
     className?: string;
     messages: Array<MessageModel>;
+    showInfoMessages: boolean;
     sendMessage: ReturnType<typeof sendMessage>;
+    showInfoMessagesChange: ReturnType<typeof showInfoMessagesChange>;
 }
 
 interface ChatState {
@@ -29,7 +31,7 @@ interface ChatState {
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
     state = {
-        inputValue: '',
+        inputValue: "",
         now: moment()
     };
 
@@ -44,6 +46,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         this.onInputChange = this.onInputChange.bind(this);
         this.scrollToBottom = this.scrollToBottom.bind(this);
         this.onFilesDrop = this.onFilesDrop.bind(this);
+        this.onShowSystemMessagesClick = this.onShowSystemMessagesClick.bind(this);
         setInterval(this.updateTime.bind(this), 2000);
     }
 
@@ -55,12 +58,12 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             content: addEmojis(content),
             author: this.props.user,
             type: MessageType.TEXT,
-            room: location.href.split('/')[4]
+            room: location.href.split("/")[4]
         });
 
         this.setState({
             ...this.state,
-            inputValue: ''
+            inputValue: ""
         });
 
         setTimeout(() => {
@@ -69,7 +72,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     }
 
     scrollToBottom() {
-        let objDiv = document.getElementById('messages-container');
+        let objDiv = document.getElementById("messages-container");
         if (objDiv) {
             objDiv.scrollTop = objDiv.scrollHeight;
         }
@@ -85,17 +88,21 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         }
     }
 
+    onShowSystemMessagesClick() {
+        this.props.showInfoMessagesChange({show: !this.props.showInfoMessages});
+    }
+
     onFilesDrop(acceptedFiles) {
         const file = acceptedFiles && acceptedFiles[0];
         if (file) {
             const reader = new FileReader();
-            reader.addEventListener('load', () => {
+            reader.addEventListener("load", () => {
                 this.props.sendMessage({
                     type: MessageType.BASE64IMAGE,
                     content: reader.result,
                     author: this.props.user,
-                    room: location.href.split('/')[4]
-                })
+                    room: location.href.split("/")[4]
+                });
             });
 
             reader.readAsDataURL(file);
@@ -105,12 +112,18 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     render() {
         return (
             <div className={classnames(this.props.className, styles.chat)}>
-                <Messages messages={this.props.messages} user={this.props.user} now={this.state.now}/>
+                <Messages
+                    showSystemMessages={this.props.showInfoMessages}
+                    messages={this.props.messages} user={this.props.user} now={this.state.now} />
+                <div onClick={this.onShowSystemMessagesClick}>
+                    <input type={'checkbox'}
+                           checked={this.props.showInfoMessages} /> Show system messages
+                </div>
                 <div className="input-group">
                     <Dropzone
                         style={{}}
                         disableClick={true}
-                        accept={'image/*'} onDrop={this.onFilesDrop}>
+                        accept={"image/*"} onDrop={this.onFilesDrop}>
                         <input
                             className="form-control"
                             placeholder={`Typing as ${this.props.user}...`}
