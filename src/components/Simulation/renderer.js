@@ -72,7 +72,8 @@ var center = new THREE.Vector3();
 function loadModel ( url ) {
     var loader = new THREE.BufferGeometryLoader();
     loader.load( url, function( geometry ) {
-        // debugger;
+        mesh && scene.remove(mesh);
+
         geometry.computeVertexNormals();
         geometry.normalizeNormals();
         var material = new THREE.MeshLambertMaterial( {
