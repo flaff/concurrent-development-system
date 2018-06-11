@@ -7,13 +7,13 @@ module.exports = function (io) {
                 if (err) {
                     reject(err);
                 }
-                else if(!foundSession) {
+                else if (!foundSession) {
                     reject(new Error('NOT_FOUND'));
                 } else {
                     resolve(foundSession);
                 }
             });
-        })
+        });
     };
 
     let getAllSessions = () => {
@@ -22,14 +22,14 @@ module.exports = function (io) {
                 .find({})
                 .select('Name CreateDate')
                 .exec(function (err, foundSessions) {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    resolve(foundSessions);
-                }
-            });
-        })
+                    if (err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(foundSessions);
+                    }
+                });
+        });
     };
 
     let createNewSession = (sessionData) => {
@@ -45,12 +45,15 @@ module.exports = function (io) {
                     resolve(savedSession);
                 }
             });
-        })
+        });
     };
 
     let appendMessageToSession = (sessionId, messageData) => {
         return new Promise((resolve, reject) => {
-            Session.findOneAndUpdate({_id: sessionId}, {$push: {Messages: messageData}}, {safe: true, upsert: true}, function (err, foundSession) {
+            Session.findOneAndUpdate({_id: sessionId}, {$push: {Messages: messageData}}, {
+                safe: true,
+                upsert: true
+            }, function (err, foundSession) {
                 if (err) {
                     reject(err);
                 }
@@ -58,14 +61,57 @@ module.exports = function (io) {
                     resolve(foundSession);
                 }
             });
-        })
+        });
+    };
+
+    let saveSessionFileState = (sessionId, fileUrl) => {
+        return new Promise((resolve, reject) => {
+            Session.findOneAndUpdate({_id: sessionId}, {
+                '$set': {
+                    'State.fileUrl': fileUrl
+                }
+            }, {
+                safe: true,
+                upsert: true
+            }, function (err, foundSession) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundSession);
+                }
+            });
+        });
+    };
+
+    let saveSessionPostionState = (sessionId, x = 0, y = 0) => {
+        return new Promise((resolve, reject) => {
+            Session.findOneAndUpdate({_id: sessionId}, {
+                '$set': {
+                    'State.x': x,
+                    'State.y': y
+                }
+            }, {
+                safe: true,
+                upsert: true
+            }, function (err, foundSession) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundSession);
+                }
+            });
+        });
     };
 
     return {
         createNewSession: createNewSession,
         appendMessageToSession: appendMessageToSession,
         findSessionById: findSessionById,
-        getAllSessions: getAllSessions
+        getAllSessions: getAllSessions,
+        saveSessionFileState: saveSessionFileState,
+        saveSessionPostionState: saveSessionPostionState
     }
 };
 

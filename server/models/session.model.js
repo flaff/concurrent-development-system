@@ -11,7 +11,12 @@ const Message = {
 const sessionSchema = new Schema({
     Messages: [Schema.Types.Mixed],
     CreateDate: Date,
-    Name: String
+    Name: String,
+    State: {
+        x: Number,
+        y: Number,
+        fileUrl: String
+    }
 });
 
 sessionSchema.pre('save', function (next) {

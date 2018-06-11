@@ -5,7 +5,7 @@ var canvas, ctx, flag = false,
     currY = 0,
     dot_flag = false;
 
-var x = "black",
+var x = "red",
     y = 2;
 
 function setCanvas(newCanvas) {

@@ -5,9 +5,12 @@ const toFiveDigitString = (i) => Array(6 - String(i + 1).length).join('0') + Str
 
 module.exports = function (io) {
     io.sockets.on('connection', function (socket) {
+        let send = true;
+        let currentPosition;
+
         socket.emit('CONNECTED_TO_SOCKET', {socket: socket.id});
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             console.log('[' + new Date().toUTCString() + ']', ` >> socket ${socket.id} disconnected`);
         });
 
@@ -57,6 +60,16 @@ module.exports = function (io) {
         });
 
         socket.on('ROTATE_SIMULATION', function (socketData) {
+            if (send) {
+                send = false;
+                setTimeout(() => {
+                    sessionRepository.saveSessionPostionState(currentPosition.sessionId, currentPosition.x, currentPosition.y).then((data) => {
+                        console.log('[' + new Date().toUTCString() + ']', `SERVER >> session state saved: ${currentPosition.x} , ${currentPosition.y}`);
+                    });
+                    send = true;
+                }, 5000);
+            }
+            currentPosition = socketData;
             console.log('[' + new Date().toUTCString() + ']', socketData, 'ROTATE_SIMULATION');
             io.to(socketData.sessionId).emit('ROTATED_SIMULATION', socketData);
         });
@@ -67,7 +80,9 @@ module.exports = function (io) {
 
         socket.on('CHANGE_SIMULATION', function (socketData) {
             console.log('[' + new Date().toUTCString() + ']', socketData, 'CHANGE_SIMULATION');
-
+            sessionRepository.saveSessionFileState(socketData.sessionId, socketData.name).then((data) => {
+                console.log('[' + new Date().toUTCString() + ']', `SERVER >> session state saved: ${socketData.name}`);
+            });
             if (!isNaN(+socketData.name)) {
                 socketData.name = toFiveDigitString(+socketData.name);
             }
@@ -115,6 +130,10 @@ module.exports = function (io) {
                 }
 
                 console.log('[AUTO] CHANGED_SIMULATION', sessionId, 'from', currentName, 'to', nextName);
+
+                sessionRepository.saveSessionFileState(sessionIds[i], currentName).then((data) => {
+                    console.log('[' + new Date().toUTCString() + ']', `SERVER >> session state saved: ${currentName}`);
+                });
 
                 currentStepOfSimulations[sessionId] = nextName;
                 io.to(sessionId).emit('CHANGED_SIMULATION', {
