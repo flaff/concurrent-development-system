@@ -29,4 +29,16 @@
   .canvas {
     flex: 1 1 auto;
   }
+
+  .colorPicker {
+
+  }
+  .colorPickerButton {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+    border-radius: 3px;
+    border: 1px solid rgba(black, 0.1);
+  }
 }

@@ -5,7 +5,7 @@ var canvas, ctx, flag = false,
     currY = 0,
     dot_flag = false;
 
-var x = "red",
+var x = "#FF5555",
     y = 2;
 
 function setCanvas(newCanvas) {
@@ -101,6 +101,14 @@ function findxy(res, e) {
             draw();
         }
     }
+}
+
+export function setColor(color) {
+    x = color;
+}
+
+export function getColor() {
+    return x;
 }
 
 export {
