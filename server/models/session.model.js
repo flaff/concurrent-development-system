@@ -15,7 +15,8 @@ const sessionSchema = new Schema({
     State: {
         x: Number,
         y: Number,
-        fileUrl: String
+        fileUrl: String,
+        autoPlay: String
     }
 });
 

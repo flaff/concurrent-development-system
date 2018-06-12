@@ -103,6 +103,10 @@ module.exports = function (io) {
                 delete autoPlaySimulationSessions[socketData.sessionId];
             }
 
+            sessionRepository.saveSessionAutoPlayState(socketData.sessionId, socketData.autoPlay).then((data) => {
+                console.log('[' + new Date().toUTCString() + ']', `SERVER >> session autoplay state saved: ${socketData.autoPlay}`);
+            });
+
             io.to(socketData.sessionId).emit('CHANGED_AUTOPLAY_SIMULATION', {
                 autoPlay: socketData.autoPlay
             });

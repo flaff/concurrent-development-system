@@ -107,13 +107,34 @@ module.exports = function (io) {
         });
     };
 
+    let saveSessionAutoPlayState = (sessionId, autoPlay) => {
+        return new Promise((resolve, reject) => {
+            Session.findOneAndUpdate({_id: sessionId}, {
+                '$set': {
+                    'State.autoPlay': autoPlay
+                }
+            }, {
+                safe: true,
+                upsert: true
+            }, function (err, foundSession) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(foundSession);
+                }
+            });
+        });
+    };
+
     return {
         createNewSession: createNewSession,
         appendMessageToSession: appendMessageToSession,
         findSessionById: findSessionById,
         getAllSessions: getAllSessions,
         saveSessionFileState: saveSessionFileState,
-        saveSessionPostionState: saveSessionPostionState
+        saveSessionPostionState: saveSessionPostionState,
+        saveSessionAutoPlayState: saveSessionAutoPlayState
     }
 };
 
