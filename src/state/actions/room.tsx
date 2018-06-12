@@ -1,7 +1,7 @@
 import {JoinRoomPayload, SendMessagePayload, ShowInfoMessagesChangePayload} from "@request/types/sockets";
 import {EmitJoinRoom, EmitLeaveRoom, EmitMessage} from "@request/simulation";
-import {GET_ALL_MESSAGES, JOIN_ROOM, LEAVE_ROOM, SEND_MESSAGE, SHOW_INFO_MESSAGES_CHANGE} from "@state/constants/room";
-import {GetAllMessagesPayload} from "@request/types";
+import {RESTORE_SESSION, JOIN_ROOM, LEAVE_ROOM, SEND_MESSAGE, SHOW_INFO_MESSAGES_CHANGE} from "@state/constants/room";
+import {RestoreSessionPayload} from "@request/types";
 import {RequestAllMessages} from "@request/session";
 
 export const
@@ -20,11 +20,11 @@ export const
         dispatch(SEND_MESSAGE(params));
     },
 
-    getAllMessages = dispatch => (params: GetAllMessagesPayload) => {
-        dispatch(GET_ALL_MESSAGES.START());
+    getAllMessages = dispatch => (params: RestoreSessionPayload) => {
+        dispatch(RESTORE_SESSION.START());
         RequestAllMessages(params)
-            .then((request) => dispatch(GET_ALL_MESSAGES.SUCCESS(request.data)))
-            .catch((error) => dispatch(GET_ALL_MESSAGES.ERROR(error)))
+            .then((request) => dispatch(RESTORE_SESSION.SUCCESS(request.data)))
+            .catch((error) => dispatch(RESTORE_SESSION.ERROR(error)))
     },
 
     showInfoMessagesChange = dispatch => (params: ShowInfoMessagesChangePayload) =>

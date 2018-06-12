@@ -1,5 +1,7 @@
 let Session = require('../models/session.model');
 
+const toFiveDigitString = (i) => Array(6 - String(i + 1).length).join('0') + String(i);
+
 module.exports = function (io) {
     let findSessionById = (sessionId) => {
         return new Promise((resolve, reject) => {
@@ -68,7 +70,7 @@ module.exports = function (io) {
         return new Promise((resolve, reject) => {
             Session.findOneAndUpdate({_id: sessionId}, {
                 '$set': {
-                    'State.fileUrl': fileUrl
+                    'State.fileUrl': !isNaN(+fileUrl) ? toFiveDigitString(+fileUrl) : fileUrl
                 }
             }, {
                 safe: true,

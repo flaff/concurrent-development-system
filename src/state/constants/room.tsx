@@ -6,11 +6,11 @@ import {
     SendMessagePayload,
     JoinRoomPayload, ShowInfoMessagesChangePayload
 } from "@request/types/sockets";
-import {GetAllMessagesResponse} from "@request/types";
+import {RestoreSessionResponse} from "@request/types";
 
 export const
     SEND_MESSAGE = createActionCreator<SendMessagePayload>('SEND_MESSAGE'),
-    GET_ALL_MESSAGES = createGenericRequestConsts<GetAllMessagesResponse>('GET_ALL_MESSAGES'),
+    RESTORE_SESSION = createGenericRequestConsts<RestoreSessionResponse>('RESTORE_SESSION'),
     MESSAGE = createActionCreator<MessagePayload>('MESSAGE'),
     JOIN_ROOM = createActionCreator<JoinRoomPayload>('JOIN_ROOM'),
     JOINED_ROOM = createActionCreator<JoinedRoomPayload>('JOINED_ROOM'),

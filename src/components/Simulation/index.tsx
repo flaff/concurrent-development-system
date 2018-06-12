@@ -33,8 +33,8 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
     constructor(props: SimulationProps) {
         super(props);
         this.state = {
-            url: '',
-            fileNumberInputValue: '',
+            url: props.url || '',
+            fileNumberInputValue: props.simulationName || '',
             snapshotBase64Image: '',
             snapshotVisible: false
         };
@@ -65,8 +65,8 @@ class Simulation extends React.Component<SimulationProps, SimulationState> {
         if (props.url && props.url !== this.state.url) {
             this.setState({
                 ...this.state,
-                url: props.url,
-                fileNumberInputValue: props.simulationName ? props.simulationName : this.state.fileNumberInputValue
+                fileNumberInputValue: props.simulationName || this.state.fileNumberInputValue,
+                url: props.url
             });
             loadModel(props.url);
         }

@@ -1,11 +1,17 @@
 import {MessagePayload} from "@request/types/sockets";
 
-export type GetAllMessagesPayload = {
+export type RestoreSessionPayload = {
     id: string;
 };
 
-export type GetAllMessagesResponse = {
+export type RestoreSessionResponse = {
     _id: string;
     Messages: Array<MessagePayload>;
     Name: string;
+    State?: {
+        fileUrl?: string;
+        x?: number;
+        y?: number;
+        autoPlay?: boolean;
+    }
 };

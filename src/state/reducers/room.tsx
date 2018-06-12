@@ -1,9 +1,9 @@
 import {RoomState} from "@state/types/room";
 import {IAction} from "@state/constants/generic";
-import {GET_ALL_MESSAGES, LEAVE_ROOM, SHOW_INFO_MESSAGES_CHANGE} from "@state/constants/room";
+import {RESTORE_SESSION, LEAVE_ROOM, SHOW_INFO_MESSAGES_CHANGE} from "@state/constants/room";
 import {JOIN_ROOM, JOINED_ROOM, MESSAGE} from "@state/constants/room";
 import {MessagePayload, JoinedRoomPayload, LeftRoomPayload, JoinRoomPayload} from "@request/types/sockets";
-import {GetAllMessagesResponse} from "@request/types";
+import {RestoreSessionResponse} from "@request/types";
 
 const
     defaultState: RoomState = {
@@ -33,7 +33,7 @@ const
         ]
     }),
 
-    getAllMessagesSuccessReducer = (state: RoomState, action: IAction<GetAllMessagesResponse>) => ({
+    restoreSessionSuccessReducer = (state: RoomState, action: IAction<RestoreSessionResponse>) => ({
         ...state,
         messages: action.payload.Messages,
         name: action.payload.Name,
@@ -59,8 +59,8 @@ export default function roomReducer(state: RoomState, action: IAction<any>) {
         case MESSAGE.type:
             return messageReducer(state, action);
 
-        case GET_ALL_MESSAGES.SUCCESS.type:
-            return getAllMessagesSuccessReducer(state, action);
+        case RESTORE_SESSION.SUCCESS.type:
+            return restoreSessionSuccessReducer(state, action);
 
         default:
             return state || defaultState;
